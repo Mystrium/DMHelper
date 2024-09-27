@@ -5,15 +5,14 @@
 @section('content')
     <div class="position-relative">
         <div id="mapContainer" class="border" style="height: 650px; overflow: hidden; position: relative;">
-        <div class="map-wrapper">
-        <div class="map-container">
+            <div class="map-wrapper">
+                <div class="map-container">
                     <img id="mapImage" src="https://media.wizards.com/2015/images/dnd/resources/20151117_Sword-Coast-Map.jpg" alt="Карта" draggable="false" style="width: 1600px; height: 800px; cursor: grab; position: absolute;">
                 </div>
             </div>
         </div>
 
-
-        <div class="position-absolute top-0 start-0 p-3 border rounded bg-light opacity-75">
+        <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="option1">
                 <label class="form-check-label" for="option1">Сюжет</label>

@@ -5,7 +5,7 @@
 @section('content')
     <div class="container my-5">
         <div class="row justify-content-center text-center">
-            <div class="col-md-8 mb-5 border rounded history-block">
+            <div class="col-md-8 mb-5 border rounded history-block active-block">
                 <h5>Назва блоку</h5> 
                 <textarea class="form-control mb-3" rows="4">Цей текст можна редагувати. Це перший блок історії.</textarea>
             </div>

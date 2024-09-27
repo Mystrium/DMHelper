@@ -47,6 +47,49 @@
     transition: transform 0.3s ease;
     transform-origin: top left;
 }
+
+.game-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            height: 250px;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Анімація збільшення при наведенні */
+        .game-card:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 0, 0, 0.7); /* Темніший фон при наведенні */
+        }
+
+        /* Півпрозорий фон для тексту */
+        .game-card-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Стилі для назви та опису */
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .game-description {
+            font-size: 16px;
+        }
+
+        /* Стилі для відступів карток */
+        .game-card-container {
+            margin-bottom: 30px;
+        }
         </style>
     </head>
     

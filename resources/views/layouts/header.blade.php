@@ -13,12 +13,31 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Персонажі</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Гра</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/auth">Вхід</a>
-                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="/game">Гра</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/playlists">Плейлисти</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button class="dropdown-item" type="submit">Вийти</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth">Вхід/Реєстрація</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </nav>
