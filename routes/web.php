@@ -7,10 +7,8 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/', function () { return view('welcome'); });
 
-Route::view('/auth', 'auth');
-
+Route::get( 'login',    [AuthController::class, 'index']);
 Route::post('login',    [AuthController::class, 'login'])->name("login");
-
 Route::post('register', [AuthController::class, 'register'])->name("register");
 
 Route::middleware('auth')->group(function () {
@@ -23,13 +21,13 @@ Route::middleware('auth')->group(function () {
     Route::view('/story', 'game.story');
     Route::view('/fight', 'game.fight');
 
-    Route::get('/playlists',        [MusicListController::class, 'index'])->name('playlists');
-    Route::post('addplaylist',      [MusicListController::class, 'create'])->name('addplaylist');
-    Route::put('/playlist/{id}',   [MusicListController::class, 'update'])->name('playlist.update');
-    Route::delete('playlist/{id}',  [MusicListController::class, 'destroy'])->name('playlist.destroy');
+    Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
+    Route::post(    'addplaylist',  [MusicListController::class, 'create'])->name('addplaylist');
+    Route::put(     'playlist/{id}',[MusicListController::class, 'update'])->name('playlist.update');
+    Route::delete(  'playlist/{id}',[MusicListController::class, 'destroy'])->name('playlist.destroy');
 
-    Route::get('/music/{id}',       [MusicController::class, 'index'])->name('music');
-    Route::post('addmusic/{id}',    [MusicController::class, 'store'])->name('addmusic');
-    Route::delete('music/{id}',     [MusicController::class, 'destroy'])->name('music.destroy');
+    Route::get(     'music/{id}',   [MusicController::class, 'index'])->name('music');
+    Route::post(    'addmusic/{id}',[MusicController::class, 'store'])->name('addmusic');
+    Route::delete(  'music/{id}',   [MusicController::class, 'destroy'])->name('music.destroy');
 
 });

@@ -32,23 +32,22 @@
             }
 
             .map-wrapper {
-    width: 100%;
-    height: 700px;
-    overflow: hidden;
-    position: relative;
-    border: 2px solid #000;
-}
+                width: 100%;
+                height: 700px;
+                overflow: hidden;
+                position: relative;
+                border: 2px solid #000;
+            }
 
-/* Контейнер для перетягування та масштабування */
-.map-container {
-    width: 100%;
-    height: 100%;
-    cursor: grab;
-    transition: transform 0.3s ease;
-    transform-origin: top left;
-}
+        .map-container {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: top left;
+        }
 
-.game-card {
+        .game-card {
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease, background-color 0.3s ease;
@@ -100,6 +99,8 @@
         @yield('content')
 
         @include('layouts.footer')
+
+        @include('layouts.message')
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         @yield('scripts')

@@ -39,7 +39,7 @@
                     @foreach($musics as $music)
                         @if($music->music_category_id == $categ->id)
                             <div class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">
-                                <iframe width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}" frameborder="0"></iframe>
+                                <iframe class="music-video" width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}" frameborder="0"></iframe>
                                 
                                 <form method="POST" action="{{ route('music.destroy', ['id' => $music->id]) }}" class="position-absolute bottom-0 end-0 m-2" onsubmit="return confirmDeletion(event);">
                                     @csrf
@@ -103,7 +103,9 @@
         </div>
     </div>
 </div>
-
+<div class="text-center p-3">
+    <button class="btn btn-success" onClick="controlVideo('pauseVideo');">Зробити тишу</button>
+</div>
 @endsection
 
 @section('scripts')
@@ -118,5 +120,18 @@
                 event.target.submit();
             }
         }
+
+        function controlVideo(vidFunc) {
+            var iframe = document.getElementsByTagName("iframe");
+            for (let i = 0; i < iframe.length; i++) {
+                iframe[i].contentWindow.postMessage('{"event":"command","func":"' + vidFunc + '","args":""}',"*");
+            }
+        }
+
+        const videos = document.querySelectorAll('.music-video');
+        videos.forEach(video => {
+            let src = video.src;
+            video.src = src + '?enablejsapi=1';
+        });
     </script>
 @endsection

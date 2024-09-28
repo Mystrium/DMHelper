@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller {
+
+    public function index(){
+        return view('auth');
+    }
+
     public function register(Request $request) {
         $validatedData = $request->validate([
             'email' => 'required|email|max:50|unique:users',
@@ -27,9 +32,7 @@ class AuthController extends Controller {
 
             return redirect('/game');
         } else {
-            return back()->withErrors([
-                'password' => 'Паролі різні',
-            ]);
+            return back()->withErrors(['msg' => 'Паролі різні']);
         }
     }
 
@@ -40,9 +43,7 @@ class AuthController extends Controller {
             return redirect('/game');
         }
 
-        return back()->withErrors([
-            'email' => 'Неправильні дані для входу',
-        ]);
+        return back()->withErrors(['email' => 'Неправильні дані для входу']);
     }
 
     public function logout(){

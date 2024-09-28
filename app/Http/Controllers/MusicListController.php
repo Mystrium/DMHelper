@@ -23,22 +23,12 @@ class MusicListController extends Controller {
         $playlist->user_id = auth()->id();
         $playlist->save();
 
-        return redirect()->route('music', $playlist->id)->with('success', 'Плейлист створено успішно');
-    }
-
-    function edit($id) {
-        $playlist = MusicList::findOrFail($id);
-        if ($playlist->user_id != auth()->id()) {
-            abort(403);
-        }
-        return view('playlists.edit', compact('playlist'));
+        return redirect()->route('music', $playlist->id);
     }
 
     function update(Request $request, $id) {
         $playlist = MusicList::findOrFail($id);
-        if ($playlist->user_id != auth()->id()) {
-            abort(403);
-        }
+        if ($playlist->user_id != auth()->id()) { abort(403); }
 
         $validated = $request->validate([
             'title' => 'required|max:30',
@@ -49,15 +39,14 @@ class MusicListController extends Controller {
         $playlist->description = $validated['description'];
         $playlist->save();
 
-        return redirect()->route('playlists')->with('success', 'Плейлист оновлено успішно');
+        return back()->withErrors(['msg' => 'Плейлист оновленно']);
     }
 
     function destroy($id) {
         $playlist = MusicList::findOrFail($id);
-        if ($playlist->user_id != auth()->id()) {
-            abort(403);
-        }
+        if ($playlist->user_id != auth()->id()) { abort(403); }
+        
         $playlist->delete();
-        return redirect()->route('playlists')->with('success', 'Плейлист видалено успішно');
+        return back()->withErrors(['msg' => 'Плейлист видалено успішно']);
     }
 }

@@ -23,7 +23,7 @@ class MusicController extends Controller {
             'youtube_url' => explode('v=', $request->input('youtube_url'))[1]
         ]);
 
-        return redirect()->route('music', $musicListId)->with('success', 'Пісня додана.');
+        return redirect()->route('music', $musicListId)->withErrors(['msg' => 'Пісня додана']);
     }
 
     public function destroy($id) {
@@ -31,6 +31,6 @@ class MusicController extends Controller {
         $musicListId = $music->music_list_id;
 
         $music->delete();
-        return redirect()->route('music', $musicListId)->with('success', 'Пісня видалена.');
+        return redirect()->route('music', $musicListId)->withErrors(['msg' => 'Пісня видалена']);
     }
 }

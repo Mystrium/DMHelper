@@ -56,10 +56,5 @@
             </form>
         </div>
     </div>
-
-    @error('password')
-        <div class="alert alert-danger">{{ $message }}</div>
-    @enderror
-
 </div>
 @endsection
