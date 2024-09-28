@@ -15,7 +15,7 @@
                     </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="/game">Гра</a>
+                            <a class="nav-link" href="/game">Ігри</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/playlists">Плейлисти</a>

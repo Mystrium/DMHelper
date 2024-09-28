@@ -51,61 +51,61 @@
             </a>
         </div>
     </div>
-
-
-    <div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPlaylistModalLabel">Новий плейлист</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addPlaylistForm" method="POST" action="{{ route('addplaylist') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="playlistTitle" class="form-label">Назва</label>
-                            <input type="text" class="form-control" id="playlistTitle" name="title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="playlistDescription" class="form-label">Опис</label>
-                            <textarea class="form-control" id="playlistDescription" name="description" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success">Додати</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="changePlaylistModal" tabindex="-1" aria-labelledby="changePlaylistModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePlaylistModalLabel">...</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                        <form id="editform" method="POST" action="playlist/">
-                            @csrf
-                            @method('PUT')
-
-                        <div class="mb-3">
-                            <label for="playlistTitle" class="form-label">Назва</label>
-                            <input type="text" class="form-control" id="chPlaylistTitle" name="title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="playlistDescription" class="form-label">Опис</label>
-                            <textarea class="form-control" id="chPlaylistDescription" name="description" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-warning">Змінити</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+
+<div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPlaylistModalLabel">Новий плейлист</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPlaylistForm" method="POST" action="{{ route('playlist.add') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="playlistTitle" class="form-label">Назва</label>
+                        <input type="text" class="form-control" id="playlistTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="playlistDescription" class="form-label">Опис</label>
+                        <textarea class="form-control" id="playlistDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Додати</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changePlaylistModal" tabindex="-1" aria-labelledby="changePlaylistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePlaylistModalLabel">...</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <form id="editform" method="POST" action="playlist/">
+                        @csrf
+                        @method('PUT')
+
+                    <div class="mb-3">
+                        <label for="playlistTitle" class="form-label">Назва</label>
+                        <input type="text" class="form-control" id="chPlaylistTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="playlistDescription" class="form-label">Опис</label>
+                        <textarea class="form-control" id="chPlaylistDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Змінити</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')

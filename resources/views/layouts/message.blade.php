@@ -1,5 +1,5 @@
 @if($errors->any())
-    <div id="customAlert" class="alert alert-success alert-dismissible fade show position-fixed bottom-50 start-50 translate-middle-x" role="alert" style="width: auto;">
+    <div id="customAlert" style="z-index: 1030" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x" role="alert" style="width: auto;">
             {{ $errors->first() }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>

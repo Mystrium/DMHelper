@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\MusicListController;
+use App\Http\Controllers\StoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -14,20 +16,28 @@ Route::post('register', [AuthController::class, 'register'])->name("register");
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/game', 'games')->name('game');
-
     Route::view('/map', 'game.map');
     Route::view('/players', 'game.players');
     Route::view('/story', 'game.story');
     Route::view('/fight', 'game.fight');
 
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
-    Route::post(    'addplaylist',  [MusicListController::class, 'create'])->name('addplaylist');
+    Route::post(    'playlist/add', [MusicListController::class, 'create'])->name('playlist.add');
     Route::put(     'playlist/{id}',[MusicListController::class, 'update'])->name('playlist.update');
     Route::delete(  'playlist/{id}',[MusicListController::class, 'destroy'])->name('playlist.destroy');
 
     Route::get(     'music/{id}',   [MusicController::class, 'index'])->name('music');
-    Route::post(    'addmusic/{id}',[MusicController::class, 'store'])->name('addmusic');
+    Route::post(    'addmusic/{id}',[MusicController::class, 'store'])->name('music.add');
     Route::delete(  'music/{id}',   [MusicController::class, 'destroy'])->name('music.destroy');
+
+    Route::get(     'game',         [GameController::class, 'index'])->name('game');
+    Route::post(    'game/add',     [GameController::class, 'create'])->name('game.add');
+    Route::put(     'game/{id}',    [GameController::class, 'update'])->name('game.update');
+    Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');
+
+    Route::get(     'story/{id}',   [StoryController::class, 'index'])->name('story');
+    Route::post(    'story/{id}',   [StoryController::class, 'create'])->name('story.add');
+    Route::put(     'story/{id}',   [StoryController::class, 'update'])->name('story.update');
+    Route::delete(  'story/{id}',   [StoryController::class, 'destroy'])->name('story.destroy');
 
 });
