@@ -11,7 +11,7 @@ class StoryController extends Controller {
     public function index($gameId) {
         $game = Game::findOrFail($gameId);
         $blocks = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
-        return view('game.story', compact( 'game', 'blocks'));
+        return view('game.storyedit', compact( 'game', 'blocks'));
     }
 
     public function create(Request $request, $gameId) {
@@ -26,11 +26,13 @@ class StoryController extends Controller {
             'game_id' => $gameId
         ]);
 
-        foreach($request->input('next_stories') as $next_story){
-            StoryLink::create([
-                'story_from_id' => $newstory->id,
-                'story_to_id' => $next_story
-            ]);
+        if($request->input('next_stories') != null) {
+            foreach($request->input('next_stories') as $next_story){
+                StoryLink::create([
+                    'story_from_id' => $newstory->id,
+                    'story_to_id' => $next_story
+                ]);
+            }
         }
 
         return back()->withErrors(['msg' => 'Частиннку додано']);
@@ -49,11 +51,13 @@ class StoryController extends Controller {
         $story->save();
 
         StoryLink::where('story_from_id', '=', $story->id)->delete();
-        foreach($request->input('next_stories') as $next_story){
-            StoryLink::create([
-                'story_from_id' => $story->id,
-                'story_to_id' => $next_story
-            ]);
+        if($request->input('next_stories') != null) {
+            foreach($request->input('next_stories') as $next_story){
+                StoryLink::create([
+                    'story_from_id' => $story->id,
+                    'story_to_id' => $next_story
+                ]);
+            }
         }
 
         return back()->withErrors(['msg' => 'Частинку оновленно']);
@@ -65,4 +69,24 @@ class StoryController extends Controller {
         $story->delete();
         return back()->withErrors(['msg' => 'Блок видалена']);
     }
+
+    public function story($gameId) {
+        $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
+
+        return view('game.story', compact('start'));
+    }
+
+    public function next(Request $request) {
+        $storyId = $request->input('story_id');
+
+        $nextStories = Story::whereHas('linkedFrom', function($query) use ($storyId) {
+            $query->where('story_from_id', $storyId);
+        })->get();
+    
+        if ($nextStories->isEmpty())
+            return response()->json(['message' => 'Кінець']);
+    
+        return response()->json(['next_stories' => $nextStories]);
+    }
+
 }

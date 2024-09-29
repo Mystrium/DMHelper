@@ -36,8 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');
 
     Route::get(     'story/{id}',   [StoryController::class, 'index'])->name('story');
+    Route::post(    'story/next',   [StoryController::class, 'next'])->name('story.next');
     Route::post(    'story/{id}',   [StoryController::class, 'create'])->name('story.add');
     Route::put(     'story/{id}',   [StoryController::class, 'update'])->name('story.update');
     Route::delete(  'story/{id}',   [StoryController::class, 'destroy'])->name('story.destroy');
+    Route::get( 'story/play/{id}',  [StoryController::class, 'story'])->name('story.play');
 
 });

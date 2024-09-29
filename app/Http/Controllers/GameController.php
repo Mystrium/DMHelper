@@ -27,7 +27,7 @@ class GameController extends Controller {
             'music_list_id' => $request->input('music_list_id')
         ]);
 
-        return redirect()->route('map', $newgame->id);
+        return redirect()->route('story', $newgame->id);
     }
 
     function update(Request $request, $id) {
