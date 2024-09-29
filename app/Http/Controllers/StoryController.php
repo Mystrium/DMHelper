@@ -10,23 +10,53 @@ use App\Models\Game;
 class StoryController extends Controller {
     public function index($gameId) {
         $game = Game::findOrFail($gameId);
-        $blocks = $game->story()->orderBy('id', 'desc')->get();
+        $blocks = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
         return view('game.story', compact( 'game', 'blocks'));
     }
 
     public function create(Request $request, $gameId) {
         $request->validate([ 
             'title' => 'required|string|max:50',
-            'text' => 'required|string|max:300'
+            'text' => 'required|string|max:300',
         ]);
 
-        Story::create([
+        $newstory = Story::create([
             'title' => $request->input('title'),
             'text' => $request->input('text'),
             'game_id' => $gameId
         ]);
 
-        return back()->withErrors(['msg' => 'Блок доданий']);
+        foreach($request->input('next_stories') as $next_story){
+            StoryLink::create([
+                'story_from_id' => $newstory->id,
+                'story_to_id' => $next_story
+            ]);
+        }
+
+        return back()->withErrors(['msg' => 'Частиннку додано']);
+    }
+
+    function update(Request $request, $id) {
+        $story = Story::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:50',
+            'text' => 'required|string|max:300',
+        ]);
+
+        $story->title = $validated['title'];
+        $story->text = $validated['text'];
+        $story->save();
+
+        StoryLink::where('story_from_id', '=', $story->id)->delete();
+        foreach($request->input('next_stories') as $next_story){
+            StoryLink::create([
+                'story_from_id' => $story->id,
+                'story_to_id' => $next_story
+            ]);
+        }
+
+        return back()->withErrors(['msg' => 'Частинку оновленно']);
     }
 
     public function destroy($id) {
