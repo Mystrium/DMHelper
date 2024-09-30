@@ -89,4 +89,29 @@ class StoryController extends Controller {
         return response()->json(['next_stories' => $nextStories]);
     }
 
+    public function test($gameId){
+        $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get()[0];
+        $game = Game::findOrFail($gameId);
+        $raw = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
+
+        $links = [];
+        $blocks = [];
+
+        foreach($raw as $block){
+            foreach($block->linkedTo as $link){
+                $links[] = [
+                    'a' => $block->id, 
+                    'b' => $link->id
+                ];
+            }
+
+            $blocks[] = [
+                'id' => $block->id,
+                'title' => $block->title,
+                'text' => $block->text
+            ];
+        }
+
+        return view('game.storytest', compact('start', 'links', 'blocks', 'raw'));
+    }
 }

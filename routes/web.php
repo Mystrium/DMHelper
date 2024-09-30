@@ -41,5 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::put(     'story/{id}',   [StoryController::class, 'update'])->name('story.update');
     Route::delete(  'story/{id}',   [StoryController::class, 'destroy'])->name('story.destroy');
     Route::get( 'story/play/{id}',  [StoryController::class, 'story'])->name('story.play');
+    Route::get( 'story/test/{id}',  [StoryController::class, 'test'])->name('story.test');
 
 });

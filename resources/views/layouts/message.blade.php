@@ -8,7 +8,9 @@
 <script>
     setTimeout(function() {
         let alertElement = document.getElementById('customAlert');
-        let alert = new bootstrap.Alert(alertElement);
-        alert.close();
+        if(alertElement != null){
+            let alert = new bootstrap.Alert(alertElement);
+            alert.close();
+        }
     }, 2000);
 </script>
