@@ -5,6 +5,23 @@
 @section('content')
     <div class="container my-5">
         <div id="story-container" class="row justify-content-center text-center">
+            
+            <div class="col-md-8 mb-5 border rounded history-block">
+                <form method="POST" action="/story/{{$game->id}}">
+                    @csrf
+                    <input type="text" class="my-2" name="title" placeholder="Назва"></input>
+                    <textarea class="form-control mb-2" rows="4" name="text"></textarea>
+
+                    <select class="form-control select2" name="next_stories[]" multiple="multiple">
+                        @foreach($blocks as $story2)
+                            <option value="{{ $story2->id }}">{{ $story2->title }} ({{ $story2->text }})</option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="btn btn-success mb-2">Записати</button>
+                </form>
+            </div>
+
             @foreach($blocks as $story)
                 <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block">
                     <form id="editform" method="POST" action="/story/{{$story->id}}">
@@ -42,22 +59,6 @@
                     </form>
                 </div>
             @endforeach
-            
-            <div class="col-md-8 mb-5 border rounded history-block">
-                <form method="POST" action="/story/{{$game->id}}">
-                    @csrf
-                    <input type="text" class="my-2" name="title" placeholder="Назва"></input>
-                    <textarea class="form-control mb-2" rows="4" name="text"></textarea>
-
-                    <select class="form-control select2" name="next_stories[]" multiple="multiple">
-                        @foreach($blocks as $story2)
-                            <option value="{{ $story2->id }}">{{ $story2->title }} ({{ $story2->text }})</option>
-                        @endforeach
-                    </select>
-
-                    <button type="submit" class="btn btn-success mb-2">Записати</button>
-                </form>
-            </div>
             
             <a href="/story/play/{{$game->id}}" class="btn btn-success">Перегляд</a>
 

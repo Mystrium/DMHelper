@@ -10,7 +10,7 @@ use App\Models\Game;
 class StoryController extends Controller {
     public function index($gameId) {
         $game = Game::findOrFail($gameId);
-        $blocks = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
+        $blocks = $game->story()->with('linkedTo')->get();
         return view('game.storyedit', compact( 'game', 'blocks'));
     }
 

@@ -4,11 +4,11 @@
 
 @section('content')
     <div id="story-container" class="container">
-        <div id="columns">
-            <div class="column" data-column-id="1">
-                <div class="block" data-block-id="{{ $start->id }}">
-                    {{ $start->title }}
-                    {{ $start->text }}
+        <div class="child-container mt-4 row mb-3">
+            <div class="card block mb-8 col" data-block-id="{{ $start->id }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $start->title }}</h5>
+                    <p class="card-text">{{ $start->text }}</p>
                 </div>
             </div>
         </div>
@@ -18,143 +18,111 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let links = @json($links);
-        let blocks = @json($blocks);
-        let columns_id = [{{$start->id}}];
-        let merge = {};
+    let links = @json($links);
+    let blocks = @json($blocks);
+    let columns_id = [{{$start->id}}];
+    let merge = merger(links);
+    let spl = [1,1,1,1,0,0,1,0,1,1,1,1,1];
+    let mrg = [0,0,0,0,0,1,1,1,1,1,1,1,1];
 
+    function renderBlocks() {
+        let tempLinks = [];
+        let ii = 0;
+
+        while (columns_id.length > 0) {
+            
+            let colId = columns_id.shift();
+            // Фільтруємо зв'язки для поточного батьківського блоку
+            links = links.filter(link => {
+                if (link.a === colId) {
+                    tempLinks.push(link);
+                    return false;
+                }
+                return true;
+            });
+
+            let parentBlock = document.querySelector(`[data-block-id="${colId}"]`);
+            let childContainer = document.createElement('div');
+            childContainer.classList.add('child-container', 'mt-2', 'row');
+
+            if(spl[ii] == 1){
+                // Якщо є дочірні блоки
+                if (tempLinks.length > 0) {
+                    tempLinks.forEach(link => {
+                        let block = blocks.find(b => b.id === link.b);
+                        if (block) {
+                            draw_block(block, childContainer);
+                            columns_id.push(block.id);  // Додаємо дочірній блок для подальшої обробки
+                        }
+                    });
+
+                    parentBlock.appendChild(childContainer);  // Виводимо дочірній контейнер під батьківським блоком
+                    tempLinks = [];
+                }
+            }
+        
+            if(mrg[ii] == 1){
+                let mergeBlockId = Object.keys(merge).find(key => merge[key].includes(colId));
+                if (mergeBlockId) {
+                    let mergeBlock = blocks.find(b => b.id == mergeBlockId);
+                    if (mergeBlock) {
+                        let closestChildContainer = parentBlock.closest('.child-container'); // Знаходимо найближчий контейнер для злиття
+                        if (closestChildContainer) {
+                            let mergeContainer = document.createElement('div');
+                            mergeContainer.classList.add('child-container', 'mt-2', 'row');
+                            
+                            draw_block(mergeBlock, mergeContainer);
+                            closestChildContainer.appendChild(mergeContainer);  // Виводимо злиття під потрібним контейнером
+
+                            columns_id = columns_id.filter(id => !merge[mergeBlockId].includes(id));
+                        }
+                    }
+                }
+            }
+        ii++;
+        }
+    }
+
+    function draw_block(block, container) {
+        let blockDiv = document.createElement('div');
+        blockDiv.classList.add('card', 'block', 'mb-8', 'col', 'm-1');
+        blockDiv.setAttribute('data-block-id', block.id);
+
+        let cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+        let cardTitle = document.createElement('h5');
+        cardTitle.classList.add('card-title');
+        cardTitle.textContent = block.title;
+
+        let cardText = document.createElement('p');
+        cardText.classList.add('card-text');
+        cardText.textContent = block.text;
+
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        blockDiv.appendChild(cardBody);
+        container.appendChild(blockDiv);
+    }
+
+    function merger(links){
+        let merge = {}
         links.forEach(link => {
             if (!merge[link.b]) merge[link.b] = [];
             merge[link.b].push(link.a);
         });
 
         Object.keys(merge).forEach(mergeKey => {
-            if(merge[mergeKey].length == 1)
+            if (merge[mergeKey].length == 1) {
                 delete merge[mergeKey];
+            }
         });
 
-        console.log('Merge:', merge);
+        return merge;
+    }
 
-        function renderBlocks() {
-            let tempLinks = [];
+    renderBlocks();
+});
 
-            // Проходимось по колонкам
-            while (columns_id.length > 0) {
-                let colId = columns_id.shift();
-
-                console.log('Processing column ID:', colId);
-
-                // Знаходимо всі дочірні елементи
-                links = links.filter(link => {
-                    if (link.a === colId) {
-                        tempLinks.push(link);
-                        return false;
-                    }
-                    return true;
-                });
-
-                console.log('Temp Links:', tempLinks);
-                console.log('Remaining Links:', links);
-
-                if (tempLinks.length > 0) {
-                    let newRow = document.createElement('div');
-                    newRow.classList.add('row', 'mt-2');
-
-                    tempLinks.forEach(link => {
-                        let block = blocks.find(b => b.id === link.b);
-                        if (block) {
-                            let colDiv = document.createElement('div');
-                            colDiv.classList.add('col-md-6');
-
-                            let blockDiv = document.createElement('div');
-                            blockDiv.classList.add('card', 'block', 'mb-8');
-                            blockDiv.setAttribute('data-block-id', block.id);
-
-                            let cardBody = document.createElement('div');
-                            cardBody.classList.add('card-body');
-
-                            let cardTitle = document.createElement('h5');
-                            cardTitle.classList.add('card-title');
-                            cardTitle.textContent = block.title;
-
-                            let cardText = document.createElement('p');
-                            cardText.classList.add('card-text');
-                            cardText.textContent = block.descr;
-
-                            cardBody.appendChild(cardTitle);
-                            cardBody.appendChild(cardText);
-                            blockDiv.appendChild(cardBody);
-                            colDiv.appendChild(blockDiv);
-
-                            // Додаємо колонку з блоком в новий ряд
-                            newRow.appendChild(colDiv);
-
-                            // Додаємо ID нового блоку в columns_id для наступних ітерацій
-                            columns_id.push(block.id);
-                        } else {
-                            console.warn('Block not found:', link.b);
-                        }
-                    });
-
-                    // Додаємо нову колонку в контейнер
-                    document.getElementById('columns').appendChild(newRow);
-
-                    // Очищуємо тимчасові зв'язки
-                    tempLinks = [];
-                }
-
-                // Перевіряємо злиття колонок (merge)
-                Object.keys(merge).forEach(mergeKey => {
-                    let count = merge[mergeKey].reduce((acc, val) => {
-                        return acc + (columns_id.includes(val) ? 1 : 0);
-                    }, 0);
-
-                    if (count === merge[mergeKey].length) {
-                        // Якщо блоки сходяться, створюємо новий блок
-                        let mergedBlock = blocks.find(b => b.id === parseInt(mergeKey));
-                        if (mergedBlock) {
-                            let newRow = document.createElement('div');
-                            newRow.classList.add('row', 'mt-4');
-
-                            let mergedColDiv = document.createElement('div');
-                            mergedColDiv.classList.add('col-md-4');
-
-                            let mergedBlockDiv = document.createElement('div');
-                            mergedBlockDiv.classList.add('card', 'block', 'mb-4');
-                            mergedBlockDiv.setAttribute('data-block-id', mergedBlock.id);
-
-                            let mergedCardBody = document.createElement('div');
-                            mergedCardBody.classList.add('card-body');
-
-                            let mergedCardTitle = document.createElement('h5');
-                            mergedCardTitle.classList.add('card-title');
-                            mergedCardTitle.textContent = mergedBlock.title;
-
-                            let mergedCardText = document.createElement('p');
-                            mergedCardText.classList.add('card-text');
-                            mergedCardText.textContent = mergedBlock.descr;
-
-                            mergedCardBody.appendChild(mergedCardTitle);
-                            mergedCardBody.appendChild(mergedCardText);
-                            mergedBlockDiv.appendChild(mergedCardBody);
-                            mergedColDiv.appendChild(mergedBlockDiv);
-
-                            newRow.appendChild(mergedColDiv);
-                            document.getElementById('columns').appendChild(newRow);
-
-                            // Очищуємо links і merge
-                            links = links.filter(link => link.b !== mergeKey);
-                            delete merge[mergeKey];
-                        } else {
-                            console.warn('Merged block not found:', mergeKey);
-                        }
-                    }
-                });
-            }
-        }
-
-        // Викликаємо функцію для початкового рендеру
-        renderBlocks();
-    });
 </script>
 @endsection
+

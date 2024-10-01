@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="container my-5">
+        <h3 class="pb-3 text-center">Заголовок для Влада</h3>
         <div id="story-container" class="row justify-content-center text-center">
             @foreach($start as $story)
                 <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block newblock"> 
