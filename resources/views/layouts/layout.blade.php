@@ -91,6 +91,15 @@
         .game-card-container {
             margin-bottom: 30px;
         }
+
+        .point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red; /* Колір точки */
+    border-radius: 50%; /* Робить точку круглою */
+    transform: translate(-50%, -50%); /* Центрує точку по координатам */
+}
         </style>
     </head>
     
