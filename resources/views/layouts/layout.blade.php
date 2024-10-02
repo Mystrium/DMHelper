@@ -34,20 +34,27 @@
             }
 
             .map-wrapper {
-                width: 100%;
-                height: 700px;
-                overflow: hidden;
-                position: relative;
-                border: 2px solid #000;
-            }
+    width: 100%;
+    height: 2000px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #000;
+}
 
-        .map-container {
-            width: 100%;
-            height: 100%;
-            cursor: grab;
-            transition: transform 0.3s ease;
-            transform-origin: top left;
-        }
+.map-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: grab;
+}
+
+#map-image {
+    max-width: none;
+    transform-origin: top left;
+    transition: transform 0.1s ease;
+}
 
         .game-card {
             position: relative;
@@ -93,13 +100,13 @@
         }
 
         .point {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red; /* Колір точки */
-    border-radius: 50%; /* Робить точку круглою */
-    transform: translate(-50%, -50%); /* Центрує точку по координатам */
-}
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red; /* Колір точки */
+            border-radius: 50%; /* Робить точку круглою */
+            transform: translate(-50%, -50%); /* Центрує точку по координатам */
+        }
         </style>
     </head>
     

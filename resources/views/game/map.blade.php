@@ -4,17 +4,17 @@
 
 @section('content')
     <div class="position-relative">
-        <div id="mapContainer" class="border" style="height: 650px; overflow: hidden; position: relative;">
+        <div id="mapContainer" class="border" style="height: 1000px; overflow: hidden; position: relative;">
             <div class="map-wrapper">
                 <div class="map-container">
-                    <img id="map-image" src="https://media.wizards.com/2015/images/dnd/resources/20151117_Sword-Coast-Map.jpg" alt="Карта" draggable="false" style="width: 1600px; height: 800px; cursor: grab; position: absolute;">
+                    <img id="map-image" src="https://media.wizards.com/2015/images/dnd/resources/20151117_Sword-Coast-Map.jpg" alt="Карта" draggable="false" style="width: 1000px; height: 500px; cursor: grab; position: absolute;">
                 </div>
             </div>
         </div>
 
         <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="option1">
+                <input class="form-check-input" onclick="test()" type="checkbox" id="option1">
                 <label class="form-check-label" for="option1">Сюжет</label>
             </div>
             <div class="form-check">
@@ -32,77 +32,36 @@
 
 @section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const mapContainer = document.querySelector('.map-container');
-    const mapImage = document.getElementById('map-image');
+const mapWrapper = document.querySelector('.map-wrapper');
+const mapContainer = document.querySelector('.map-container');
+let mapImage = document.getElementById('map-image');
 
-    let isDragging = false;
-    let startX, startY, initialX = 0, initialY = 0;
-    let translateX = 0, translateY = 0;
-    let scale = 1;
-    const scaleStep = 0.1;
+let offsetX = 0;
+let offsetY = 0;
 
-    // Переміщення мапи
-    mapContainer.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        mapContainer.style.cursor = 'grabbing';
-        startX = e.clientX;
-        startY = e.clientY;
-        const style = window.getComputedStyle(mapContainer);
-        const matrix = new WebKitCSSMatrix(style.transform);
-        translateX = matrix.m41;
-        translateY = matrix.m42;
-    });
+let scale = 1;
 
-    mapContainer.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            mapContainer.style.transform = `translate(${translateX + dx}px, ${translateY + dy}px) scale(${scale})`;
-        }
-    });
+mapWrapper.addEventListener('wheel', (event) => {
+    event.preventDefault();
 
-    mapContainer.addEventListener('mouseup', () => {
-        isDragging = false;
-        mapContainer.style.cursor = 'grab';
-    });
+    const prevScale = scale;
+    const zoomSpeed = 0.1;
+    scale += zoomSpeed * -(event.deltaY / Math.abs(event.deltaY));
 
-    mapContainer.addEventListener('mouseleave', () => {
-        isDragging = false;
-        mapContainer.style.cursor = 'grab';
-    });
+    if(scale < 0.3) scale = 0.3;
+    if(scale > 15)  scale = 15;
 
-    // Масштабування мапи
-    mapContainer.addEventListener('wheel', (e) => {
-        e.preventDefault();
+    let deltaScale = scale / prevScale;
 
-        const rect = mapContainer.getBoundingClientRect();
-        const offsetX = (e.clientX - rect.left);
-        const offsetY = (e.clientY - rect.top);
+    const rect = mapImage.getBoundingClientRect();
+    offsetX -= (event.clientX - rect.left) * (deltaScale - 1);
+    offsetY -= (event.clientY - rect.top)  * (deltaScale - 1);
 
-        const delta = e.deltaY > 0 ? -scaleStep : scaleStep;
-        const newScale = Math.max(0.1, scale + delta);
-
-        // Коригування translate, щоб масштабувалось відносно центру курсора
-        translateX += offsetX * (1 - newScale / scale);
-        translateY += offsetY * (1 - newScale / scale);
-
-        scale = newScale;
-        mapContainer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    });
-
-    mapContainer.addEventListener('click', (e) => {
-        const rect = mapContainer.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / scale; // Врахування масштабу
-        const y = (e.clientY - rect.top) / scale; // Врахування масштабу
-
-        const point = document.createElement('div');
-        point.className = 'point';
-        point.style.left = `${x}px`;
-        point.style.top = `${y}px`;
-        mapContainer.appendChild(point);
-    });
-    
+    mapImage.style.left = offsetX + "px";
+    mapImage.style.top  = offsetY + "px";
+    mapImage.style.scale = scale;
 });
+
+
 </script>
 @endsection
