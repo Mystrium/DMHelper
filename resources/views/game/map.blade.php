@@ -40,6 +40,7 @@ let offsetX = 0;
 let offsetY = 0;
 
 let scale = 1;
+const maxZoom = calcMaxZoom(mapImage, mapWrapper, 10);
 
 mapWrapper.addEventListener('wheel', (event) => {
     event.preventDefault();
@@ -49,19 +50,60 @@ mapWrapper.addEventListener('wheel', (event) => {
     scale += zoomSpeed * -(event.deltaY / Math.abs(event.deltaY));
 
     if(scale < 0.3) scale = 0.3;
-    if(scale > 15)  scale = 15;
+    if(scale > maxZoom)  scale = maxZoom;
 
     let deltaScale = scale / prevScale;
+    if (isNaN(deltaScale)) deltaScale = 1;
 
     const rect = mapImage.getBoundingClientRect();
     offsetX -= (event.clientX - rect.left) * (deltaScale - 1);
     offsetY -= (event.clientY - rect.top)  * (deltaScale - 1);
 
-    mapImage.style.left = offsetX + "px";
-    mapImage.style.top  = offsetY + "px";
-    mapImage.style.scale = scale;
+    setImageTransform(offsetX, offsetY, scale);
 });
 
+let isDrag = false;
+let mouseX = 0;
+let mouseY = 0;
+
+mapWrapper.addEventListener('mousedown', (event) => {
+    isDrag = true;
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+});
+
+mapWrapper.addEventListener('mousemove', (event) => {
+    if(isDrag){
+        offsetX += (event.clientX - mouseX);
+        offsetY += (event.clientY - mouseY);
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+        setImageTransform(offsetX, offsetY, scale);
+    }
+});
+
+mapWrapper.addEventListener('mouseup', (event) => { isDrag = false; });
+
+function setImageTransform(x, y, scale){
+    mapImage.style.left = x + "px";
+    mapImage.style.top  = y + "px";
+    mapImage.style.scale = scale;
+    console.log('x = ' + x + "   y = " + y + "  sc = " + scale);
+}
+
+function calcMaxZoom(image, wrapper,  pixelDensity = 1){
+    const imageWidth = image.naturalWidth;
+    const imageHeight = image.naturalHeight;
+    const wrapperWidth = wrapper.clientWidth;
+    const wrapperHeight = wrapper.clientHeight;
+
+    const scaleByWidth = (imageWidth * pixelDensity) / wrapperWidth;
+    const scaleByHeight = (imageHeight * pixelDensity) / wrapperHeight;
+
+    return Math.max(scaleByWidth, scaleByHeight);
+}
 
 </script>
 @endsection
