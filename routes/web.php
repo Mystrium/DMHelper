@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\MusicListController;
 use App\Http\Controllers\StoryController;
@@ -16,7 +17,6 @@ Route::post('register', [AuthController::class, 'register'])->name("register");
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/map', 'game.map');
     Route::view('/players', 'game.players');
     Route::view('/story', 'game.story');
     Route::view('/fight', 'game.fight');
@@ -43,4 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get( 'story/play/{id}',  [StoryController::class, 'story'])->name('story.play');
     Route::get( 'story/test/{id}',  [StoryController::class, 'test'])->name('story.test');
 
+    Route::get(     'map/{id}',   [MapController::class, 'index'])->name('map');
+    Route::post(    'addmap/{id}',[MapController::class, 'create'])->name('map.add');
+    Route::post(     'updatemap',  [MapController::class, 'update'])->name('map.update');
+    Route::delete(  'map/{id}',   [MapController::class, 'destroy'])->name('map.destroy');
 });

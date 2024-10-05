@@ -35,7 +35,7 @@
 
             .map-wrapper {
     width: 100%;
-    height: 2000px;
+    height: 650px;
     overflow: hidden;
     position: relative;
     border: 2px solid #000;

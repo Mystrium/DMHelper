@@ -4,6 +4,8 @@
 
 @section('content')
     <div class="container my-5">
+    <a href="/map/{{$game->id}}" class="btn btn-success">Мапа</a>
+
         <div id="story-container" class="row justify-content-center text-center">
             
             <div class="col-md-8 mb-5 border rounded history-block">
