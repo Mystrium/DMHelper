@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\MusicListController;
 use App\Http\Controllers\StoryController;
@@ -43,8 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::get( 'story/play/{id}',  [StoryController::class, 'story'])->name('story.play');
     Route::get( 'story/test/{id}',  [StoryController::class, 'test'])->name('story.test');
 
-    Route::get(     'map/{id}',   [MapController::class, 'index'])->name('map');
-    Route::post(    'addmap/{id}',[MapController::class, 'create'])->name('map.add');
-    Route::post(     'updatemap',  [MapController::class, 'update'])->name('map.update');
-    Route::delete(  'map/{id}',   [MapController::class, 'destroy'])->name('map.destroy');
+    Route::get(     'map/{id}',     [MapController::class, 'index'])->name('map');
+    Route::post(    'addmap/{id}',  [MapController::class, 'create'])->name('map.add');
+    Route::post(     'updatemap',   [MapController::class, 'update'])->name('map.update');
+    Route::delete(  'map/{id}',     [MapController::class, 'destroy'])->name('map.destroy');
+
+    Route::post(   'addmarker',     [MarkerController::class, 'create'])->name('marker.add');
 });

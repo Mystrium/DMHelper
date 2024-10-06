@@ -12,10 +12,9 @@ class MapMarker extends Model {
         'map_id', 
         'title', 
         'text', 
-        'coordinates'
+        'x',
+        'y'
     ];
-
-    protected $casts = ['coordinates' => 'array'];
 
     public function map(){
         return $this->belongsTo(Map::class);

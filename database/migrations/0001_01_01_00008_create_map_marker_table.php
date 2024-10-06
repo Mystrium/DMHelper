@@ -11,7 +11,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('map_id');
             $table->string('title', 40);
             $table->string('text', 300)->nullable();
-            $table->json('coordinates');
+            $table->unsignedInteger('x');
+            $table->unsignedInteger('y');
 
             $table->foreign('map_id')->references('id')->on('maps')->onDelete('cascade');
         });

@@ -7,7 +7,7 @@ use App\Models\Map;
 
 class MapController extends Controller {
     function index($game_id) {
-        $maps = Map::where('game_id', $game_id)->get();
+        $maps = Map::where('game_id', $game_id)->with('markers')->get();
         return view('game.map', compact('maps', 'game_id'));
     }
 
@@ -21,7 +21,7 @@ class MapController extends Controller {
         $fileName = time();
         // $fileName = time().'_'.$file->getClientOriginalName();
 
-        $filePath = $file->storeAs('maps', $fileName, 'public');
+        $file->storeAs('maps', $fileName, 'public');
 
         $map = new Map();
         $map->game_id = $game_id;
