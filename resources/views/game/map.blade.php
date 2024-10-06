@@ -240,7 +240,7 @@ window.addEventListener("load", (event) => {
 
     setImageTransform(offsetX, offsetY, scale);
 
-    let markers = @json($maps[0]->markers);
+    let markers = @json($maps[0]->markers ?? []);
     markers.forEach(marker => { placeMarker(marker); });
 });
 

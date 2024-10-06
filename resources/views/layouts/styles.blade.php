@@ -7,6 +7,7 @@
         border-color: black;
     }
 
+
     .active-block {
         background-color: #e9f7df;
         box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
@@ -22,29 +23,6 @@
         transition: all 0.3s ease-in-out;
     }
 
-    .map-wrapper {
-        width: 100%;
-        height: 650px;
-        overflow: hidden;
-        position: relative;
-        border: 2px solid #000;
-    }
-
-    .map-container {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        cursor: grab;
-    }
-
-    #map-image {
-        position: absolute;
-        max-width: none;
-        transform-origin: top left;
-        transition: transform 0.1s ease;
-    }
 
     .game-card {
         position: relative;
@@ -72,17 +50,29 @@
         border-radius: 10px;
     }
 
-    .game-title {
-        font-size: 24px;
-        font-weight: bold;
+
+    .map-wrapper {
+        width: 100%;
+        height: 650px;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #000;
     }
 
-    .game-description {
-        font-size: 16px;
+    .map-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: grab;
     }
 
-    .game-card-container {
-        margin-bottom: 30px;
+    #map-image {
+        position: absolute;
+        max-width: none;
+        transform-origin: top left;
+        transition: transform 0.1s ease;
     }
 
     #marker-container {
@@ -98,20 +88,20 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transform-origin: center bottom;  /* Встановлюємо точку походження в центр */
+        transform-origin: center bottom;
     }
 
     .tooltip-card {
         position: absolute;
-        left: 15px; /* Відстань від маркера */
-        top: -5px;  /* Відстань від маркера */
-        z-index: 10; /* Піднімаємо над маркером */
-        display: none; /* Сховати за замовчуванням */
+        left: 15px;
+        top: -5px;
+        z-index: 50;
+        display: none;
     }
 
-    .map-marker:hover .tooltip-card {
-        display: block; /* Показати картку при наведенні */
-    }
+    .map-marker:hover .tooltip-card { display: block; }
 
     .crosshair {cursor: crosshair;}
+
+    
 </style>

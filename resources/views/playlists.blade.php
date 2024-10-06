@@ -6,12 +6,12 @@
 <div class="container my-5">
     <div class="row">
         @foreach($playlists as $playlist)
-            <div class="col-md-4 game-card-container position-relative">
+            <div class="col-md-4 md-4 position-relative">
                 <a href="/music/{{$playlist->id}}" style="text-decoration: none">
                     <div class="game-card" style="background-image: url('https://img.youtube.com/vi/6Em9tLXbhfo/0.jpg');">
                         <div class="game-card-overlay">
-                            <div class="game-title">{{$playlist->title}}</div>
-                            <div class="game-description">{{$playlist->description}}</div>
+                            <div><h3>{{$playlist->title}}</h3></div>
+                            <div><h7>{{$playlist->description}}</h7></div>
                         </div>
 
                         <button onclick="changeList(event, '{{$playlist->title}}', '{{$playlist->description}}', '{{$playlist->id}}')" data-bs-toggle="modal" data-bs-target="#changePlaylistModal" type="submit" class="btn btn-warning btn-sm me-2 position-absolute bottom-0 end-0 mb-2 me-5">
@@ -35,12 +35,12 @@
             </div>
         @endforeach
 
-        <div class="col-md-4 game-card-container">
+        <div class="col-md-4 md-4">
             <a data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
                 <div class="game-card" style="background-color: lightgreen;">
                     <div class="game-card-overlay">
-                        <div class="game-title">Новий плейлист</div>
-                        <div class="game-description">
+                        <div><h3>Новий плейлист</h3></div>
+                        <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
