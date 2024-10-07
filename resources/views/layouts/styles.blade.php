@@ -99,7 +99,10 @@
         display: none;
     }
 
-    .map-marker:hover .tooltip-card { display: block; }
+    .map-marker:hover .tooltip-card { 
+        display: inline-block;
+        white-space: nowrap;
+    }
 
     .crosshair {cursor: crosshair;}
 

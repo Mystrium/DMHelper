@@ -50,4 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::delete(  'map/{id}',     [MapController::class, 'destroy'])->name('map.destroy');
 
     Route::post(   'addmarker',     [MarkerController::class, 'create'])->name('marker.add');
+    Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
+    Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
+
+
 });

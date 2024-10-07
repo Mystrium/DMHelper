@@ -29,17 +29,24 @@ class MapController extends Controller {
         $map->file_name = $fileName;
         $map->save();
 
-        return response()->json(['msg' => 'Map created successfully', 'map' => $map]);
+        return back()->withErrors(['msg' => 'Мапу додано успішно']);
     }
 
     function update(Request $request) {
-        $map = Map::findOrFail($request->map_id);
+        try {
+            $map = Map::findOrFail($request->map_id);
 
-        $validated = $request->validate(rules: ['title' => 'required|max:30']);
-        $map->title = $validated['title'];
-        $map->save();
+            $validated = $request->validate( ['title' => 'required|max:30']);
+            $map->title = $validated['title'];
+            $map->save();
 
-        return response()->json(['msg' => 'Map update successfully', 'map' => $map]);
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
 

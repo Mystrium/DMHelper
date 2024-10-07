@@ -7,22 +7,24 @@
         <div id="mapContainer" class="border" style="height: 650px; overflow: hidden; position: relative;">
             <div class="map-wrapper">
                 <div class="map-container">
-                    <img id="map-image"  src="/storage/maps/{{$maps[0]->file_name??''}}" alt="Карта" draggable="false">
+                    <img id="map-image"  src="/storage/maps/{{$maps[0]->file_name??''}}" draggable="false">
                     <div onclick="addMarkerHandler()" id="marker-container"></div>
                 </div>
             </div>
         </div>
-        <!-- https://media.wizards.com/2015/images/dnd/resources/20151117_Sword-Coast-Map.jpg -->
-        <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
-            <div class="form-check">
-                <input class="form-check-input" onclick="test()" type="checkbox" id="option1">
-                <label class="form-check-label" for="option1">Сюжет</label>
+
+        @if(isset($maps[0]->id))
+            <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="option1">
+                    <label class="form-check-label" for="option1">Сюжет</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" onclick="showMarkers(this)" checked>
+                    <label class="form-check-label" for="option2">Мітки</label>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" onclick="showMarkers(this)" checked>
-                <label class="form-check-label" for="option2">Мітки</label>
-            </div>
-        </div>
+        @endif
 
         <div class="position-absolute top-0 end-0 p-3">
             <div class="dropdown">
@@ -34,41 +36,42 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addMapModal">Нова мапа</a></li>
-                    <li><a class="dropdown-item" onclick="getPosition()">Мітка</a></li>
+                    @if(isset($maps[0]->id))
+                        <li><a class="dropdown-item" onclick="getPosition()">Мітка</a></li>
+                    @endif
                 </ul>
             </div>
         </div>
 
         @if(isset($maps[0]->id))
             <div class="position-absolute bottom-0 end-0 p-3">
-                <div class="dropdown">
-                    <a class="bg-transparent text-black pb-2" data-bs-toggle="dropdown">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
-                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                <form method="POST" action="{{ route('map.destroy', ['id' => $maps[0]->id ?? '0']) }}" class="dropdown-item" onsubmit="return confirmDeletion(event);">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                         </svg>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changeMapModal">Змінити назву мапи</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('map.destroy', ['id' => $maps[0]->id ?? '0']) }}" class="dropdown-item" onsubmit="return confirmDeletion(event);">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <a class="dropdown-item">Видалити мапу</a>
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                    </button>
+                </form>
             </div>
         @endif
 
-        <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75">
-            <p id="map_title">{{$maps[0]->title??''}}</p>
-        </div>
+        @if(isset($maps[0]->id))
+            <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75">
+                <div class="d-flex">
+                    <input type="text" class="form-control" prev_text="{{$maps[0]->title}}" id="map_change_title_{{$maps[0]->id}}" value="{{$maps[0]->title}}">
+                    <button onclick="changeMap({{$maps[0]->id}})" class="btn btn-warning ms-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        @endif
     </div>
 
-<!-- ___________ map modals ________ -->
+<!-- ___________  map modal  ________ -->
 <div class="modal fade" id="addMapModal" tabindex="-1" aria-labelledby="addMapModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -77,7 +80,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="map-upload-form" enctype="multipart/form-data">
+                <form action="/addmap/{{$game_id}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Назва мапи</label>
@@ -94,29 +97,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="changeMapModal" tabindex="-1" aria-labelledby="addMapModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addMapModalLabel">Змінити назву</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="map-change-form">
-                    @csrf
-                    <div class="mb-3">
-                        <input type="hidden" id="map_id" name="map_id" value="{{$maps[0]->id??''}}">
-                        <label class="form-label">Назва</label>
-                        <input type="text" class="form-control" id="map_change_title" name="title" required value="{{$maps[0]->title??''}}">
-                    </div>
-                    <button type="submit" data-bs-dismiss="modal" class="btn btn-warning">Змінити</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ___________ marker modal ________ -->
+<!-- __________ marker modal ________ -->
 <div class="modal fade" id="addMarkerModal" tabindex="-1" aria-labelledby="addMapModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -127,7 +108,7 @@
             <div class="modal-body">
                 <form id="marker-upload-form">
                     @csrf
-                    <input type="hidden" id="marker_parrent_map" name="map_id" value="{{$maps[0]->id??0}}">
+                    <input type="hidden" id="marker_parrent_map" value="{{$maps[0]->id??0}}">
                     <input type="hidden" id="marker_x" name="x" value="0">
                     <input type="hidden" id="marker_y" name="y" value="0">
                     <div class="mb-3">
@@ -145,6 +126,7 @@
     </div>
 </div>
 
+<div id="alert-container"></div>
 @endsection
 @section('scripts')
 <script>
@@ -183,6 +165,7 @@ function placeMarker(mrk) {
 
     const marker = document.createElement('div');
     marker.classList.add('map-marker');
+    marker.id = "marker_" + mrk.id;
     marker.style.left = `${percentX}%`;
     marker.style.top = `${percentY}%`;
 
@@ -193,8 +176,22 @@ function placeMarker(mrk) {
                         <div class="tooltip-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">${mrk.title}</h5>
-                                    <p class="card-text">${mrk.text}</p>
+                                    <input type="text" class="form-control" id="change_marker_title_${mrk.id}" prev_text="${mrk.title}" name="title" value="${mrk.title}" required>
+                                    <textarea style="width:200px" class="form-control my-2" id="change_marker_text_${mrk.id}" prev_text="${mrk.text}" name="text" required>${mrk.text}</textarea>
+                                    
+                                    <div class="d-flex">
+                                        <button class="btn btn-warning btn-sm me-1" data-id="${mrk.id}" onclick="changeMarker(this)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                                            </svg>
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm marker_delete" data-id="${mrk.id}" onclick="deleteMarker(this)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>`;
@@ -274,31 +271,11 @@ function calcMinZoom(image, wrapper, pixelDensity){
     return Math.min(scaleByWidth, scaleByHeight);
 }
 
-document.getElementById('map-upload-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    let formData = new FormData(this);
-
-    fetch('/addmap/{{$game_id}}', {
-        method: 'POST',
-        body: formData,
-        headers: { 'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.map) {
-            let mapUrl = `/storage/maps/${data.map.file_name}`;
-            document.getElementById('map-image').src = mapUrl;
-        } else alert(data.message);
-    }).catch(error => { console.error('Error:', error);});
-});
-
-document.getElementById('map-change-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
+function changeMap(mapId){
+    let changeTitle = document.getElementById('map_change_title_' + mapId);
     let formData = {
-        map_id: document.getElementById('map_id').value,
-        title: document.getElementById('map_change_title').value,
+        map_id: mapId,
+        title: changeTitle.value,
         _token: document.querySelector('input[name=_token]').value
     };
 
@@ -312,15 +289,31 @@ document.getElementById('map-change-form').addEventListener('submit', function (
     })
     .then(response => response.json())
     .then(data => {
-        if (data.map)
-            document.getElementById('map_title').innerHTML = data.map.title;
-        else alert(data.message);
+        if(data.success){
+            changeTitle.setAttribute('prev_text', changeTitle.value);
+            showAlert('Назву змінено');
+        } else {
+            changeTitle.value = changeTitle.getAttribute('prev_text');
+            showAlert('Поле задовге або пусте', 'warning');
+        }
     }).catch(error => { console.error('Error:', error);});
-});
+}
 
 function confirmDeletion(event) {
     event.preventDefault();
     if (confirm('Ви точно хочете видалити цю мапу ?')) event.target.submit();
+}
+
+function showMarkers(cheker) {
+    if(cheker.checked) {
+        document.querySelectorAll('.map-marker').forEach(marker => {
+            marker.removeAttribute("hidden");
+        });
+    } else {
+        document.querySelectorAll('.map-marker').forEach(marker => {
+            marker.setAttribute("hidden", true);
+        });
+    }
 }
 
 let wait_click = false;
@@ -349,7 +342,7 @@ document.getElementById('marker-upload-form').addEventListener('submit', functio
     e.preventDefault();
 
     let formData = {
-        map_id: document.getElementById('map_id').value,
+        map_id: document.getElementById('marker_parrent_map').value,
         title: document.getElementById('marker_title').value,
         text: document.getElementById('marker_text').value,
         x: document.getElementById('marker_x').value,
@@ -368,22 +361,89 @@ document.getElementById('marker-upload-form').addEventListener('submit', functio
     })
     .then(response => response.json())
     .then(data => {
-        if (data.marker) 
+        if (data.marker) {
             placeMarker(data.marker);
-        else alert(data.msg);
+            showAlert('Мітку додано');
+        } else 
+            showAlert('Поле задовге або пусте', 'warning');
     }).catch(error => { console.error('Error:', error);});
+
+    document.getElementById('marker_title').value = '';
+    document.getElementById('marker_text').value = '';
 });
 
-function showMarkers(cheker){
-    if(cheker.checked){
-        document.querySelectorAll('.map-marker').forEach(marker => {
-            marker.removeAttribute("hidden");
-        });
-    } else {
-        document.querySelectorAll('.map-marker').forEach(marker => {
-            marker.setAttribute("hidden", true);
-        });
+function deleteMarker(btn) {
+    const markerId = btn.getAttribute('data-id');
+    const confirmed = confirm("Ви хочете видалити цю мітку ?");
+
+    if (confirmed) {
+        fetch(`/marker/${markerId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("marker_" + markerId).remove();
+                showAlert('Мітку видаленно');
+            } else showAlert(data.message, 'warning');
+        })
+        .catch(error => console.error('Error:', error));
     }
+};
+
+function changeMarker(btn) {
+    const markerId = btn.getAttribute('data-id');
+    let changeTitle = document.getElementById('change_marker_title_' + markerId);
+    let changeText = document.getElementById('change_marker_text_' + markerId);
+
+    let formData = {
+        id: markerId,
+        title: changeTitle.value,
+        text: changeText.value,
+        _token: document.querySelector('input[name=_token]').value
+    };
+
+    fetch('/updatemarker', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': formData._token
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success){
+            changeTitle.setAttribute('prev_text', changeTitle.value);
+            changeText.setAttribute('prev_text', changeText.value);
+            showAlert('Маткер оновленно');
+        } else {
+            changeTitle.value = changeTitle.getAttribute('prev_text');
+            changeText.innerText = changeText.getAttribute('prev_text');
+            showAlert('Поле задовге або пусте', 'warning');
+        }
+    }).catch(error => { console.error('Error:', error); });
+}
+
+function showAlert(message, type = 'success') {
+    const alert = document.createElement('div');
+    alert.style = "z-index: 1030";
+    alert.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x`;
+    alert.role = 'alert';
+    alert.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
+    const container = document.getElementById('alert-container');
+    container.appendChild(alert);
+
+    setTimeout(() => {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
+        setTimeout(() => { container.removeChild(alert); }, 150);
+    }, 2000);
 }
 
 </script>
