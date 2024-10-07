@@ -50,6 +50,10 @@
         border-radius: 10px;
     }
 
+    .video-item {
+        width: 350px;
+        height:200px;
+    }
 
     .map-wrapper {
         width: 100%;

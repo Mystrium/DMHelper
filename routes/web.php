@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::delete(  'playlist/{id}',[MusicListController::class, 'destroy'])->name('playlist.destroy');
 
     Route::get(     'music/{id}',   [MusicController::class, 'index'])->name('music');
-    Route::post(    'addmusic/{id}',[MusicController::class, 'store'])->name('music.add');
+    Route::post(    'addmusic',     [MusicController::class, 'create'])->name('music.add');
     Route::delete(  'music/{id}',   [MusicController::class, 'destroy'])->name('music.destroy');
 
     Route::get(     'game',         [GameController::class, 'index'])->name('game');

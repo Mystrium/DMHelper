@@ -126,7 +126,6 @@
     </div>
 </div>
 
-<div id="alert-container"></div>
 @endsection
 @section('scripts')
 <script>
@@ -427,23 +426,6 @@ function changeMarker(btn) {
             showAlert('Поле задовге або пусте', 'warning');
         }
     }).catch(error => { console.error('Error:', error); });
-}
-
-function showAlert(message, type = 'success') {
-    const alert = document.createElement('div');
-    alert.style = "z-index: 1030";
-    alert.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x`;
-    alert.role = 'alert';
-    alert.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-
-    const container = document.getElementById('alert-container');
-    container.appendChild(alert);
-
-    setTimeout(() => {
-        alert.classList.remove('show');
-        alert.classList.add('fade');
-        setTimeout(() => { container.removeChild(alert); }, 150);
-    }, 2000);
 }
 
 </script>

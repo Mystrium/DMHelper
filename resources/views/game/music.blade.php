@@ -35,26 +35,22 @@
     <div class="tab-content pt-4" style="background-color:lightgray">
         @foreach($categories as $categ)
             <div class="tab-pane fade show {{$loop->first?'active':''}}" id="pl{{$categ->id}}" role="tabpanel" aria-labelledby="playlist1-tab">
-                <div class="d-flex overflow-auto py-3" style="white-space: nowrap;">
+                <div class="d-flex overflow-auto py-3" style="white-space: nowrap;" id="music_category_{{$categ->id}}">
                     @foreach($musics as $music)
                         @if($music->music_category_id == $categ->id)
-                            <div class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">
+                            <div id="music_{{$music->id}}" class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">
                                 <iframe class="music-video" width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}" frameborder="0"></iframe>
                                 
-                                <form method="POST" action="{{ route('music.destroy', ['id' => $music->id]) }}" class="position-absolute bottom-0 end-0 m-2" onsubmit="return confirmDeletion(event);">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                                        </svg>
-                                    </button>
-                                </form>
+                                <button class="position-absolute bottom-0 end-0 m-2 btn btn-danger btn-sm marker_delete" data-id="{{$music->id}}" onclick="deleteMusic(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                </button>
                             </div>
                         @endif
                     @endforeach
 
-                    <a data-bs-toggle="modal" onclick="changeCateg({{$categ->id}})" data-bs-target="#addPlaylistModal">
+                    <a id="music_add_{{$categ->id}}" data-bs-toggle="modal" onclick="changeCateg({{$categ->id}})" data-bs-target="#addPlaylistModal">
                         <div class="game-card p-1" style="background-color: lightgreen; height: 200px">
                             <div class="game-card-overlay">
                                 <div><h3>Додати пісню</h3></div>
@@ -72,7 +68,6 @@
             </div>
         @endforeach
     </div>
-
 </div>
 
 <div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel" aria-hidden="true">
@@ -83,11 +78,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ route('music.add', ['id' => $musicList->id]) }}">
+                <form id="music-upload-form">
                     @csrf
+                    <input type="hidden" id="music_list_id" value="{{$musicList->id}}">
                     <div class="mb-3">
                         <label for="playlistTitle" class="form-label">Категорія</label>
-                        <select class="form-select" id="categ_select" name="music_category_id" required>
+                        <select class="form-select" id="music_category_id">
                             @foreach($categories as $categ)
                                 <option value="{{$categ->id}}">{{$categ->title}}</option>
                             @endforeach
@@ -95,43 +91,105 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Посилання на YouTube</label>
-                        <input type="text" class="form-control" name="youtube_url" required>
+                        <input type="text" class="form-control" id="youtube_url" required>
                     </div>
-                    <button type="submit" class="btn btn-success">Додати</button>
+                    <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 <div class="text-center p-3">
     <button class="btn btn-success" onClick="controlVideo('pauseVideo');">Зробити тишу</button>
 </div>
 @endsection
 
 @section('scripts')
-    <script>
-        function changeCateg(id) {
-            document.getElementById('categ_select').value = id;
-        }
+<script>
+    function changeCateg(id) { document.getElementById('music_category_id').value = id; }
 
-        function confirmDeletion(event) {
-            event.preventDefault();
-            if (confirm('Ви точно хочете видалити цю пісню ?')) {
-                event.target.submit();
-            }
-        }
+    document.getElementById('music-upload-form').addEventListener('submit', function (e) {
+        e.preventDefault();
 
-        function controlVideo(vidFunc) {
-            var iframe = document.getElementsByTagName("iframe");
-            for (let i = 0; i < iframe.length; i++) {
-                iframe[i].contentWindow.postMessage('{"event":"command","func":"' + vidFunc + '","args":""}',"*");
-            }
-        }
+        let formData = {
+            music_list_id: document.getElementById('music_list_id').value,
+            music_category_id: document.getElementById('music_category_id').value,
+            youtube_url: document.getElementById('youtube_url').value,
+            _token: document.querySelector('input[name=_token]').value
+        };
 
+        fetch('/addmusic', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': formData._token
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.music) {
+                placeMusic(data.music);
+                showAlert('Пісню додано');
+            } else
+                showAlert('Посилання задовге або пусте', 'warning');
+        }).catch(error => { console.error('Error:', error);});
+
+        document.getElementById('youtube_url').value = '';
+    });
+
+    function placeMusic(msc){
+        const music = document.createElement('div');
+        music.classList.add('video-item', 'mx-2', 'position-relative');
+        music.id = "music_" + msc.id;
+
+        music.innerHTML = `<iframe class="music-video" width="350" height="200" src="https://www.youtube.com/embed/${msc.youtube_url}" frameborder="0"></iframe>
+                                
+                            <button class="position-absolute bottom-0 end-0 m-2 btn btn-danger btn-sm marker_delete" data-id="${msc.id}" onclick="deleteMusic(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>`;
+
+        let music_div = document.getElementById('music_category_' + msc.music_category_id);
+        let music_btn = document.getElementById('music_add_' + msc.music_category_id);
+        music_div.insertBefore(music, music_btn);
+    }
+
+    function deleteMusic(btn) {
+        const musicId = btn.getAttribute('data-id');
+        const confirmed = confirm("Ви хочете видалити цю пісню ?");
+
+        if (confirmed) {
+            fetch(`/music/${musicId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("music_" + musicId).remove();
+                    showAlert('Пісню видаленно');
+                } else showAlert(data.message, 'warning');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    };
+
+    function controlVideo(vidFunc) {
+        var iframe = document.getElementsByTagName("iframe");
+        for (let i = 0; i < iframe.length; i++) {
+            iframe[i].contentWindow.postMessage('{"event":"command","func":"' + vidFunc + '","args":""}',"*");
+        }
+    }
+    
+    window.addEventListener("load", (event) => {
         const videos = document.querySelectorAll('.music-video');
-        videos.forEach(video => {
-            let src = video.src;
-            video.src = src + '?enablejsapi=1';
-        });
-    </script>
+        videos.forEach(video => { video.src += '?enablejsapi=1'; });
+    });
+</script>
 @endsection

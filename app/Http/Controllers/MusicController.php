@@ -15,22 +15,36 @@ class MusicController extends Controller {
         return view('game.music', compact('musics', 'musicList', 'categories'));
     }
 
-    public function store(Request $request, $musicListId) {
-        $request->validate([ 'youtube_url' => 'required|url' ]);
-        Music::create([
-            'music_category_id' => $request->input('music_category_id'),
-            'music_list_id' => $musicListId,
-            'youtube_url' => explode('v=', $request->input('youtube_url'))[1]
-        ]);
+    public function create(Request $request) {
+        try{
+            $validated = $request->validate([ 
+                'music_category_id' => 'required|integer|exists:music_categories,id',
+                'music_list_id' => 'required|integer|exists:music_lists,id',
+                'youtube_url' => 'required|url'
+            ]);
 
-        return redirect()->route('music', $musicListId)->withErrors(['msg' => 'Пісня додана']);
+            $music = Music::create([
+                'music_category_id' => $validated['music_category_id'],
+                'music_list_id' => $validated['music_list_id'],
+                'youtube_url' => explode('v=', $validated['youtube_url'])[1]
+            ]);
+
+            return response()->json(['music' => $music]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
     public function destroy($id) {
         $music = Music::findOrFail($id);
-        $musicListId = $music->music_list_id;
 
-        $music->delete();
-        return redirect()->route('music', $musicListId)->withErrors(['msg' => 'Пісня видалена']);
+        if ($music) {
+            $music->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }
