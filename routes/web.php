@@ -19,7 +19,6 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::view('/players', 'game.players');
-    Route::view('/story', 'game.story');
     Route::view('/fight', 'game.fight');
 
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
@@ -52,6 +51,5 @@ Route::middleware('auth')->group(function () {
     Route::post(   'addmarker',     [MarkerController::class, 'create'])->name('marker.add');
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
-
 
 });

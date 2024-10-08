@@ -17,112 +17,75 @@
 
 @section('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     let links = @json($links);
     let blocks = @json($blocks);
-    let columns_id = [{{$start->id}}];
-    let merge = merger(links);
-    let spl = [1,1,1,1,0,0,1,0,1,1,1,1,1];
-    let mrg = [0,0,0,0,0,1,1,1,1,1,1,1,1];
+    
+    function buildMatrix(edges) {
+        let paths = [];
+        let nodeMap = {};
 
-    function renderBlocks() {
-        let tempLinks = [];
-        let ii = 0;
+        // Створюємо мапу, де ключ - це вершина "a", а значення - це масив вершин "b"
+        edges.forEach(({ a, b }) => {
+            if (!nodeMap[a]) {
+                nodeMap[a] = [];
+            }
+            nodeMap[a].push(b);
+        });
 
-        while (columns_id.length > 0) {
-            
-            let colId = columns_id.shift();
-            // Фільтруємо зв'язки для поточного батьківського блоку
-            links = links.filter(link => {
-                if (link.a === colId) {
-                    tempLinks.push(link);
-                    return false;
-                }
-                return true;
+        // Рекурсивна функція для побудови шляхів
+        function traverse(node, path) {
+            // Додаємо вузол до шляху
+            path.push(node);
+
+            // Якщо немає дочірніх вузлів, шлях завершено
+            if (!nodeMap[node]) {
+                paths.push([...path]); // Копіюємо поточний шлях і додаємо в список шляхів
+                return;
+            }
+
+            // Проходимо по всіх дочірніх вузлах
+            nodeMap[node].forEach(child => {
+                traverse(child, [...path]); // Копіюємо шлях для кожної гілки
             });
-
-            let parentBlock = document.querySelector(`[data-block-id="${colId}"]`);
-            let childContainer = document.createElement('div');
-            childContainer.classList.add('child-container', 'mt-2', 'row');
-
-            if(spl[ii] == 1){
-                // Якщо є дочірні блоки
-                if (tempLinks.length > 0) {
-                    tempLinks.forEach(link => {
-                        let block = blocks.find(b => b.id === link.b);
-                        if (block) {
-                            draw_block(block, childContainer);
-                            columns_id.push(block.id);  // Додаємо дочірній блок для подальшої обробки
-                        }
-                    });
-
-                    parentBlock.appendChild(childContainer);  // Виводимо дочірній контейнер під батьківським блоком
-                    tempLinks = [];
-                }
-            }
-        
-            if(mrg[ii] == 1){
-                let mergeBlockId = Object.keys(merge).find(key => merge[key].includes(colId));
-                if (mergeBlockId) {
-                    let mergeBlock = blocks.find(b => b.id == mergeBlockId);
-                    if (mergeBlock) {
-                        let closestChildContainer = parentBlock.closest('.child-container'); // Знаходимо найближчий контейнер для злиття
-                        if (closestChildContainer) {
-                            let mergeContainer = document.createElement('div');
-                            mergeContainer.classList.add('child-container', 'mt-2', 'row');
-                            
-                            draw_block(mergeBlock, mergeContainer);
-                            closestChildContainer.appendChild(mergeContainer);  // Виводимо злиття під потрібним контейнером
-
-                            columns_id = columns_id.filter(id => !merge[mergeBlockId].includes(id));
-                        }
-                    }
-                }
-            }
-        ii++;
         }
-    }
 
-    function draw_block(block, container) {
-        let blockDiv = document.createElement('div');
-        blockDiv.classList.add('card', 'block', 'mb-8', 'col', 'm-1');
-        blockDiv.setAttribute('data-block-id', block.id);
+        // Починаємо з вузла 1 (початок графа)
+        traverse(1, []);
 
-        let cardBody = document.createElement('div');
-        cardBody.classList.add('card-body');
-        let cardTitle = document.createElement('h5');
-        cardTitle.classList.add('card-title');
-        cardTitle.textContent = block.title;
+        // Знаходимо максимальну довжину шляху
+        let maxLength = Math.max(...paths.map(path => path.length));
 
-        let cardText = document.createElement('p');
-        cardText.classList.add('card-text');
-        cardText.textContent = block.text;
-
-        cardBody.appendChild(cardTitle);
-        cardBody.appendChild(cardText);
-        blockDiv.appendChild(cardBody);
-        container.appendChild(blockDiv);
-    }
-
-    function merger(links){
-        let merge = {}
-        links.forEach(link => {
-            if (!merge[link.b]) merge[link.b] = [];
-            merge[link.b].push(link.a);
-        });
-
-        Object.keys(merge).forEach(mergeKey => {
-            if (merge[mergeKey].length == 1) {
-                delete merge[mergeKey];
+        // Доповнюємо коротші шляхи останнім елементом до досягнення максимальної довжини
+        paths = paths.map(path => {
+            while (path.length < maxLength) {
+                path.push(path[path.length - 1]);
             }
+            return path;
         });
 
-        return merge;
+        return paths;
     }
 
-    renderBlocks();
-});
+    // Приклад даних
+    const edges = [
+        { a: 1, b: 2 },
+        { a: 1, b: 3 },
+        { a: 2, b: 4 },
+        { a: 2, b: 5 },
+        { a: 3, b: 6 },
+        { a: 3, b: 7 },
+        { a: 4, b: 8 },
+        { a: 5, b: 8 },
+        { a: 6, b: 9 },
+        { a: 7, b: 9 },
+        { a: 8, b: 10 },
+        { a: 9, b: 10 }
+    ];
 
+    // Виклик функції та виведення результату
+    console.log(buildMatrix(edges));
+});
 </script>
 @endsection
 
