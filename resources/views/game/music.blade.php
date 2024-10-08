@@ -107,6 +107,9 @@
 
 @section('scripts')
 <script>
+    const videos = document.querySelectorAll('.music-video');
+    videos.forEach(video => { video.src += '?enablejsapi=1'; });
+
     function changeCateg(id) { document.getElementById('music_category_id').value = id; }
 
     document.getElementById('music-upload-form').addEventListener('submit', function (e) {
@@ -186,10 +189,5 @@
             iframe[i].contentWindow.postMessage('{"event":"command","func":"' + vidFunc + '","args":""}',"*");
         }
     }
-    
-    window.addEventListener("load", (event) => {
-        const videos = document.querySelectorAll('.music-video');
-        videos.forEach(video => { video.src += '?enablejsapi=1'; });
-    });
 </script>
 @endsection

@@ -72,10 +72,10 @@
         cursor: grab;
     }
 
-    #map-image {
+    .map-image {
         position: absolute;
         max-width: none;
-        transform-origin: top left;
+        transform-origin: 0 0;
         transition: transform 0.1s ease;
     }
 

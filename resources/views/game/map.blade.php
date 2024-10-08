@@ -4,13 +4,19 @@
 
 @section('content')
     <div class="position-relative">
-        <div id="mapContainer" class="border" style="height: 650px; overflow: hidden; position: relative;">
-            <div class="map-wrapper">
-                <div class="map-container">
-                    <img id="map-image"  src="/storage/maps/{{$maps[0]->file_name??''}}" draggable="false">
-                    <div onclick="addMarkerHandler()" id="marker-container"></div>
+        <div class="tab-content" id="mapTabsContent">
+            @foreach($maps as $map)
+                <div class="tab-pane {{$loop->first ? 'show active' : ''}}" id="map_tab_{{$map->id}}" role="tabpanel" aria-labelledby="tab_{{$map->id}}">
+                    <div id="mapContainer_{{$map->id}}" style="height: 650px; overflow: hidden;">
+                        <div class="map-wrapper" data-id="{{$map->id}}" id="map_wrapper_{{$map->id}}">
+                            <div class="map-container" style="position: relative;">
+                                <img id="map_image_{{$map->id}}" src="/storage/maps/{{$map->file_name}}" draggable="false" class="map-image">
+                                <div onclick="addMarkerHandler()" id="marker_container_{{$map->id}}" class="map-image"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @endforeach
         </div>
 
         @if(isset($maps[0]->id))
@@ -45,7 +51,7 @@
 
         @if(isset($maps[0]->id))
             <div class="position-absolute bottom-0 end-0 p-3">
-                <form method="POST" action="{{ route('map.destroy', ['id' => $maps[0]->id ?? '0']) }}" class="dropdown-item" onsubmit="return confirmDeletion(event);">
+                <form id="delete_form" method="POST" action="{{ route('map.destroy', ['id' => $maps[0]->id ?? '0']) }}" class="dropdown-item" onsubmit="return confirmDeletion(event);">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">
@@ -58,15 +64,23 @@
         @endif
 
         @if(isset($maps[0]->id))
-            <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75">
-                <div class="d-flex">
-                    <input type="text" class="form-control" prev_text="{{$maps[0]->title}}" id="map_change_title_{{$maps[0]->id}}" value="{{$maps[0]->title}}">
-                    <button onclick="changeMap({{$maps[0]->id}})" class="btn btn-warning ms-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
-                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
+            <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75 w-75">
+                <ul class="nav nav-tabs justify-content-center" id="mapTabs" role="tablist">
+                    @foreach ($maps as $map)
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link {{$loop->first?'active':''}}" id="map1-tab" onclick="changeActiveMap({{$map->id}})" data-bs-toggle="tab" data-bs-target="#map_tab_{{$map->id}}" role="tab" aria-controls="map1" aria-selected="{{$loop->first?'true':'false'}}">
+                                <div class="d-flex">
+                                    <input style="width:100px" type="text" class="form-control" prev_text="{{$map->title}}" id="map_change_title_{{$map->id}}" value="{{$map->title}}">
+                                    <button onclick="changeMap({{$map->id}})" class="btn btn-warning ms-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         @endif
     </div>
@@ -108,7 +122,7 @@
             <div class="modal-body">
                 <form id="marker-upload-form">
                     @csrf
-                    <input type="hidden" id="marker_parrent_map" value="{{$maps[0]->id??0}}">
+                    <input type="hidden" id="marker_parrent_map" value="0">
                     <input type="hidden" id="marker_x" name="x" value="0">
                     <input type="hidden" id="marker_y" name="y" value="0">
                     <div class="mb-3">
@@ -129,42 +143,111 @@
 @endsection
 @section('scripts')
 <script>
-const mapWrapper = document.querySelector('.map-wrapper');
-let mapImage = document.getElementById('map-image');
-let markerContainer = document.getElementById('marker-container');
+let currentMap = {{$maps[0]->id ?? 0}};
+function changeActiveMap(id) { currentMap = id; }
 
-let offsetX = 0;
-let offsetY = 0;
+let mapWrapper = {};
+let mapImage = {};
+let markerContainer = {};
+let offset = {};
+let maxZoom = {};
+let minZoom = {};
 
-let scale = 1;
-let maxZoom = 3;
-let minZoom = 0.5;
+let isDrag = false;
+let mouseX = 0;
+let mouseY = 0;
 
-mapWrapper.addEventListener('wheel', (event) => {
-    event.preventDefault();
+window.addEventListener("load", (event) => {
+    document.querySelectorAll('.map-wrapper').forEach((wrapper) => {
+        const mapId = wrapper.getAttribute('data-id');
+        
+        mapWrapper[mapId] = wrapper;
+        mapImage[mapId] = wrapper.querySelector('.map-container img');
+        markerContainer[mapId] = wrapper.querySelector('.map-container div');
 
-    const prevScale = scale;
-    const zoomSpeed = 0.1;
+        offset[mapId] = { x: 0, y: 0 };
 
-    scale += zoomSpeed * (event.deltaY > 0 ? -1 : 1);
-    scale = Math.min(maxZoom, Math.max(minZoom, scale));
+        maxZoom[mapId] = calcMaxZoom(mapImage[mapId], 15);
+        minZoom[mapId] = calcMinZoom(mapImage[mapId], 0.9);
 
-    let deltaScale = scale / prevScale;
+        centerMap(mapId, minZoom[mapId]);
+        wrapperListeners(mapId);
+    });
 
-    const rect = mapImage.getBoundingClientRect();
-    offsetX -= (event.clientX - rect.left) * (deltaScale - 1);
-    offsetY -= (event.clientY - rect.top)  * (deltaScale - 1);
-
-    setImageTransform(offsetX, offsetY, scale);
+    let maps = @json($maps ?? []);
+    maps.forEach(map => { 
+        map.markers.forEach(marker => { 
+            placeMarker(marker); 
+        });
+    });
 });
 
+function centerMap(id, scale){
+    let mapCont = document.querySelectorAll('.map-container')[0];
+
+    offset[id].x = (mapCont.clientWidth - mapImage[id].naturalWidth * scale) / 2;
+    offset[id].y = (mapCont.clientHeight - mapImage[id].naturalHeight * scale) / 2;
+
+    markerContainer[id].style.width  = mapImage[id].naturalWidth  + "px";
+    markerContainer[id].style.height = mapImage[id].naturalHeight + "px";
+
+    setImageTransform(offset[id].x, offset[id].y, scale, id);
+}
+
+function wrapperListeners(id){
+    mapWrapper[id].addEventListener('wheel', (event) => {
+        event.preventDefault();
+
+        let scale = mapImage[id].style.scale * 1;
+        const prevScale = scale;
+        const zoomSpeed = 0.1;
+
+        scale += zoomSpeed * (event.deltaY > 0 ? -1 : 1);
+
+        scale = Math.min(maxZoom[id], Math.max(minZoom[id], scale));
+        let deltaScale = scale / prevScale;
+
+        const rect = mapImage[id].getBoundingClientRect();
+        offset[id].x -= (event.clientX - rect.left) * (deltaScale - 1);
+        offset[id].y -= (event.clientY - rect.top)  * (deltaScale - 1);
+
+        setImageTransform(offset[id].x, offset[id].y, scale, id);
+    });
+
+    mapWrapper[id].addEventListener('mousedown', (event) => {
+        isDrag = true;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    });
+
+    mapWrapper[id].addEventListener('mousemove', (event) => {
+        if(isDrag){
+            offset[id].x += (event.clientX - mouseX);
+            offset[id].y += (event.clientY - mouseY);
+
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+
+            let scale = mapImage[id].style.scale * 1;
+            setImageTransform(offset[id].x, offset[id].y, scale, id);
+        }
+    });
+
+    mapWrapper[id].addEventListener('mouseup', (event) => { 
+        isDrag = false;
+        mouseX = 0;
+        mouseY = 0;
+    });
+}
+
 function placeMarker(mrk) {
-    let percentX = (mrk.x / mapImage.width) * 100;
-    let percentY = ((mrk.y - 8) / mapImage.height) * 100;
+    let percentX = (mrk.x / mapImage[mrk.map_id].width) * 100;
+    let percentY = ((mrk.y - 8) / mapImage[mrk.map_id].height) * 100;
 
     const marker = document.createElement('div');
     marker.classList.add('map-marker');
     marker.id = "marker_" + mrk.id;
+    marker.setAttribute('map_id', mrk.map_id);
     marker.style.left = `${percentX}%`;
     marker.style.top = `${percentY}%`;
 
@@ -195,77 +278,40 @@ function placeMarker(mrk) {
                             </div>
                         </div>`;
 
-    marker.style.transform = `translate(-50%, -50%) scale(${1 / scale})`;
+    marker.style.transform = `translate(-50%, -50%) scale(${1 / mapImage[mrk.map_id].style.scale})`;
 
-    markerContainer.appendChild(marker);
+    markerContainer[mrk.map_id].appendChild(marker);
 }
 
-let isDrag = false;
-let mouseX = 0;
-let mouseY = 0;
-mapWrapper.addEventListener('mousedown', (event) => {
-    isDrag = true;
-    mouseX = event.clientX;
-    mouseY = event.clientY;
-});
+function setImageTransform(x, y, scale, id){
+    mapImage[id].style.left = x + "px";
+    mapImage[id].style.top  = y + "px";
+    mapImage[id].style.scale = scale;
 
-mapWrapper.addEventListener('mousemove', (event) => {
-    if(isDrag){
-        offsetX += (event.clientX - mouseX);
-        offsetY += (event.clientY - mouseY);
-
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-
-        setImageTransform(offsetX, offsetY, scale);
-    }
-});
-
-mapWrapper.addEventListener('mouseup', (event) => { isDrag = false; });
-
-window.addEventListener("load", (event) => {
-    maxZoom = calcMaxZoom(mapImage, mapWrapper, 15);
-    minZoom = calcMinZoom(mapImage, mapWrapper, 0.9);
-
-    scale = minZoom;
-    offsetX += (mapWrapper.clientWidth -  mapImage.naturalWidth  * scale) / 2;
-    offsetY += (mapWrapper.clientHeight - mapImage.naturalHeight * scale) / 2;
-
-    markerContainer.style.width = mapImage.naturalWidth + "px";
-    markerContainer.style.height  = mapImage.naturalHeight + "px";
-
-    setImageTransform(offsetX, offsetY, scale);
-
-    let markers = @json($maps[0]->markers ?? []);
-    markers.forEach(marker => { placeMarker(marker); });
-});
-
-function setImageTransform(x, y, scale){
-    mapImage.style.left = x + "px";
-    mapImage.style.top  = y + "px";
-    mapImage.style.scale = scale;
-
-    markerContainer.style.left = x + "px";
-    markerContainer.style.top  = y + "px";
-    markerContainer.style.scale = scale;
+    markerContainer[id].style.left = x + "px";
+    markerContainer[id].style.top  = y + "px";
+    markerContainer[id].style.scale = scale;
 
     document.querySelectorAll('.map-marker').forEach(marker => {
-        marker.style.transform = `translate(-50%, -50%) scale(${1 / scale})`;
+        if(marker.getAttribute('map_id') == currentMap)
+            marker.style.transform = `translate(-50%, -50%) scale(${1 / scale})`;
     });
-
-    console.log("x:y = " + x + "|" + y);
 }
 
-function calcMaxZoom(image, wrapper, pixelDensity){
-    const scaleByWidth = (image.naturalWidth * pixelDensity) / wrapper.clientWidth;
-    const scaleByHeight = (image.naturalHeight * pixelDensity) / wrapper.clientHeight;
+function calcMaxZoom(image, pixelDensity){
+    let mapCont = document.querySelectorAll('.map-container')[0];
+
+    const scaleByWidth = (image.naturalWidth * pixelDensity) / mapCont.clientWidth;
+    const scaleByHeight = (image.naturalHeight * pixelDensity) / mapCont.clientHeight;
 
     return Math.max(scaleByWidth, scaleByHeight);
 }
 
-function calcMinZoom(image, wrapper, pixelDensity){
-    const scaleByWidth = wrapper.clientWidth / image.naturalWidth  * pixelDensity;
-    const scaleByHeight = wrapper.clientHeight / image.naturalHeight  * pixelDensity;
+function calcMinZoom(image, pixelDensity){
+    let mapCont = document.querySelectorAll('.map-container')[0];
+
+    const scaleByWidth = mapCont.clientWidth / image.naturalWidth  * pixelDensity;
+    const scaleByHeight = mapCont.clientHeight / image.naturalHeight  * pixelDensity;
 
     return Math.min(scaleByWidth, scaleByHeight);
 }
@@ -300,7 +346,10 @@ function changeMap(mapId){
 
 function confirmDeletion(event) {
     event.preventDefault();
-    if (confirm('Ви точно хочете видалити цю мапу ?')) event.target.submit();
+    if (confirm('Ви точно хочете видалити цю мапу ?')){ 
+        document.getElementById('delete_form').action = '/map/' + currentMap;
+        event.target.submit();
+    }
 }
 
 function showMarkers(cheker) {
@@ -318,21 +367,23 @@ function showMarkers(cheker) {
 let wait_click = false;
 function getPosition(){ 
     wait_click = true;
-    markerContainer.classList.add("crosshair");
+    markerContainer[currentMap].classList.add("crosshair");
 }
 
 function addMarkerHandler() {
     if(wait_click){
-        const rect = markerContainer.getBoundingClientRect();
+        const rect = markerContainer[currentMap].getBoundingClientRect();
+        const scale = markerContainer[currentMap].style.scale;
         const x = Math.round((event.clientX - rect.left) / scale);
         const y = Math.round((event.clientY - rect.top) / scale);
 
         document.getElementById('marker_x').value = x;
         document.getElementById('marker_y').value = y;
+        document.getElementById('marker_parrent_map').value = currentMap;
 
         $('#addMarkerModal').modal('show');
 
-        markerContainer.classList.remove("crosshair");
+        markerContainer[currentMap].classList.remove("crosshair");
         wait_click = false;
     }
 }
