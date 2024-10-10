@@ -142,3 +142,7 @@
         }
     </script>
 @endsection
+
+<!-- 
+    todo play mode
+-->

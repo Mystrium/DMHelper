@@ -226,3 +226,15 @@ function updateBlock() {
 
 </script>
 @endsection
+
+<!-- 
+    todo update node text
+    todo delete node
+        with links
+        jump link
+    todo add node with links
+    search nodes by title, text
+        zoom-in find node
+    todo grab links
+        update link
+-->

@@ -44,3 +44,16 @@
         </div>
     </div>
 @endsection
+
+<!-- 
+    todo think
+    todo unit type select ???
+    todo dnd classes icons ???
+        fight icons table ???
+    todo active unit by initiative
+        bottom unit info
+    todo HP AC +-
+    todo units movement
+    todo unit attacks ???
+    todo players seacrh ???
+-->
