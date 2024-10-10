@@ -100,8 +100,8 @@ class StoryController extends Controller {
         foreach($raw as $block){
             foreach($block->linkedTo as $link){
                 $links[] = [
-                    'source' => $block->id, 
-                    'target' => $link->id
+                    'a' => $block->id, 
+                    'b' => $link->id
                 ];
             }
 

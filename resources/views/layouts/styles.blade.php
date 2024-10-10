@@ -110,5 +110,14 @@
 
     .crosshair {cursor: crosshair;}
 
-    
+    .node {
+        position: absolute;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+
 </style>

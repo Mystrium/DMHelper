@@ -3,8 +3,11 @@
 @section('title', 'Історія')
 
 @section('content')
-    <div id="story-container" class="container">
+    <!-- <div id="story-container" class="container"> -->
 
+    <div id="graph-container" style="position: relative; height: 2000px; width: 100%;"></div>
+
+    {{--
         <div class="form-container position-absolute bottom-0 start-50 translate-middle-x text-center">
             <div class="form-group">
                 <input type="text" class="form-control" id="block_title" required>
@@ -19,94 +22,172 @@
                 </svg>
             </button>
         </div>
+    --}}
 
-    </div>
+    <!-- </div> -->
 @endsection
 
 @section('scripts')
-<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 
-const graph = {
+let graph = {
     nodes: @json($blocks),
     links: @json($links)
 };
 
-var width = window.innerWidth;
-var height = window.innerHeight - 60;
+let renderedNodes = {};
+const container = document.getElementById('graph-container');
+let svg = innitSvg();
 
-const svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
+renderNode({{$start->id}}, window.innerWidth / 2, 50);
+resolveOverlaping();
+renderConnections();
 
-const simulation = d3.forceSimulation(graph.nodes)
-    .force("link", d3.forceLink(graph.links).id(d => d.id).distance(150))
-    .force("charge", d3.forceManyBody().strength(-500))
-    .force("center", d3.forceCenter(width / 2, height / 2));
 
-// Створюємо лінії (зв'язки)
-const link = svg.append("g")
-    .selectAll("line")
-    .data(graph.links)
-    .enter()
-    .append("line")
-    .attr("stroke", "#999")
-    .attr("stroke-width", 3);
+function innitSvg(){
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    container.appendChild(svg);
 
-// Створюємо вузли у вигляді груп
-const node = svg.append("g")
-    .selectAll("g")
-    .data(graph.nodes)
-    .enter()
-    .append("g")
-    .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended))
-    .on('click', function(d) { handleBlockClick(d) });
+    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
-// Додаємо прямокутники для карток
-node.append("rect")
-    .attr("width", d => Math.min(d.text.length, 20) * 9)
-    .attr("height", 60)  // Збільшили висоту, щоб вмістити опис
-    .attr("rx", 10)  // заокруглені кути
-    .attr("ry", 10)
-    .attr("id", d => 'rect_' + d.id)
-    .attr("fill", "#69b3a2")
-    .attr("stroke", "#333")
-    .attr("stroke-width", 2);
+    let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+    marker.setAttribute("id", "arrowhead");
+    marker.setAttribute("markerWidth", "10");
+    marker.setAttribute("markerHeight", "7");
+    marker.setAttribute("refX", "20");
+    marker.setAttribute("refY", "3.5");
+    marker.setAttribute("orient", "auto");
+    marker.setAttribute("markerUnits", "strokeWidth");
 
-// Додаємо текст назви всередині карток
-node.append("text")
-    .attr("x", d => Math.min(d.text.length, 20) * 4.5)  // Центруємо текст
-    .attr("y", 20)  // Розміщуємо текст трохи вище по центру
-    .attr("id", d => 'title_' + d.id)
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
-    .attr("fill", "#fff")
-    .text(d => d.title);
+    let arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    arrow.setAttribute("points", "0 0, 10 3.5, 0 7");
+    arrow.setAttribute("fill", "black");
 
-// Додаємо текст опису під назвою
-node.append("text")
-    .attr("x", d => Math.min(d.text.length, 20) * 4.5)
-    .attr("y", 40)
-    .attr("id", d => 'text_' + d.id)
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
-    .attr("fill", "#fff")
-    .text(d => d.text.length > 20 ? d.text.substring(0, 20) + '...' : d.text);
+    marker.appendChild(arrow);
 
-let curr_rect = 0;
+    defs.appendChild(marker);
 
-function handleBlockClick(block){
-    let data = block.target.__data__;
-    console.log(data.id + " => " + data.title + " (" + data.text + ")");
+    svg.appendChild(defs);
 
-    document.getElementById('block_title').value = data.title;
-    document.getElementById('block_text').value = data.text;
-
-    d3.select("#rect_" + curr_rect).attr('fill', "#69b3a2");
-    d3.select("#rect_" + data.id).attr('fill', "#11915c");
-    curr_rect = data.id;
+    return svg;
 }
+
+function getChildren(nodeId) {
+    return graph.links.filter(link => link.a === nodeId).map(link => link.b);
+}
+
+function renderNode(nodeId, x, y, level = 0) {
+    const nodeData = graph.nodes.find(node => node.id === nodeId);
+    if (!nodeData || renderedNodes[nodeId]) return;
+    renderedNodes[nodeId] = true;
+
+    drawNode(nodeData, x, y);
+
+    const children = getChildren(nodeId);
+    children.forEach((childId, index) => {
+        const childX = x + (index * 150) - (children.length - 1) * 75;
+        const childY = y + 150;
+        renderNode(childId, childX, childY, level + 1);
+    });
+}
+
+function drawNode(node, x, y) {
+    const nodeElement = document.createElement('div');
+    nodeElement.classList.add('node');
+    nodeElement.textContent = `${node.title}`;
+    nodeElement.style.top = `${y}px`;
+    nodeElement.style.left = `${x}px`;
+    nodeElement.setAttribute('data-id', node.id);
+    container.appendChild(nodeElement);
+}
+
+function renderConnections() {
+    graph.links.forEach(conn => {
+        const startNode = document.querySelector(`[data-id="${conn.a}"]`);
+        const endNode = document.querySelector(`[data-id="${conn.b}"]`);
+        if (startNode && endNode) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            
+            line.setAttribute("x1", startNode.offsetLeft + startNode.offsetWidth / 2);
+            line.setAttribute("y1", startNode.offsetTop + startNode.offsetHeight / 2);
+            line.setAttribute("x2", endNode.offsetLeft + endNode.offsetWidth / 2);
+            line.setAttribute("y2", endNode.offsetTop + endNode.offsetHeight / 2);
+            line.setAttribute("stroke", "black");
+            line.setAttribute("stroke-width", "2");
+            line.setAttribute('start-node', conn.a);
+            line.setAttribute('end-node',   conn.b);
+
+            line.setAttribute("marker-end", "url(#arrowhead)");
+            
+            svg.appendChild(line);
+        }
+    });
+}
+
+function resolveOverlaping(){
+    let nodes = document.querySelectorAll(".node");
+    nodes.forEach(node1 => { 
+        nodes.forEach(node2 => { 
+            if(node1.style.left == node2.style.left 
+                && node1.style.top == node2.style.top
+                && node1.getAttribute('data-id') != node2.getAttribute('data-id')){
+                    node2.style.left = (parseInt(node1.style.left) + 50) + "px";
+                    node1.style.left = (parseInt(node1.style.left) - 50) + "px";
+                }
+        });
+    });
+}
+
+
+document.querySelectorAll(".node").forEach(node => { node.addEventListener('mousedown', startDrag); });
+document.addEventListener('mouseup', endDrag);
+document.addEventListener('mousemove', dragging);
+
+let activeBlock = null;
+let deltaX = 0;
+let deltaY = 0;
+function startDrag(event) {
+    activeBlock = event.target;
+    deltaX = parseInt(activeBlock.style.left) - event.pageX;
+    deltaY = parseInt(activeBlock.style.top) - event.pageY;
+}
+
+function dragging(event) {
+    if (!activeBlock) return;
+    activeBlock.style.left = event.pageX + deltaX + "px";
+    activeBlock.style.top  = event.pageY + deltaY + "px";
+    moveLines(activeBlock);
+}
+
+function endDrag() {
+    deltaX = 0;
+    deltaY = 0;
+    activeBlock = null;
+}
+
+function moveLines(node) {
+    let id = node.getAttribute('data-id');
+
+    let starts = document.querySelectorAll(`[start-node="${id}"]`);
+    let ends = document.querySelectorAll(`[end-node="${id}"]`);
+
+    starts.forEach(line => {
+        line.setAttribute("x1", node.offsetLeft + node.offsetWidth / 2);
+        line.setAttribute("y1", node.offsetTop + node.offsetHeight / 2);
+    });
+
+    ends.forEach(line => {
+        line.setAttribute("x2", node.offsetLeft + node.offsetWidth / 2);
+        line.setAttribute("y2", node.offsetTop + node.offsetHeight / 2);
+    });
+
+}
+
 
 function updateBlock() {
     let title = document.getElementById('block_title').value;
@@ -141,33 +222,6 @@ function updateBlock() {
             showAlert('Поле задовге або пусте', 'warning');
     }).catch(error => { console.error('Error:', error);});
 
-}
-
-// function for d3
-simulation.on("tick", () => {
-    link.attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
-
-    node.attr("transform", d => `translate(${d.x - 60}, ${d.y - 40})`);
-});
-
-function dragstarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-}
-
-function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-}
-
-function dragended(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
 }
 
 </script>
