@@ -4,172 +4,171 @@
 
 @section('content')
     <div id="story-container" class="container">
-        {{--<div class="child-container mt-4 row mb-3">
-            <div class="card block mb-8 col" data-block-id="{{ $start->id }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $start->title }}</h5>
-                    <p class="card-text">{{ $start->text }}</p>
-                </div>
+
+        <div class="form-container position-absolute bottom-0 start-50 translate-middle-x text-center">
+            <div class="form-group">
+                <input type="text" class="form-control" id="block_title" required>
             </div>
-        </div>--}}
-        
+            <div class="form-group">
+                <textarea class="form-control" id="block_text" rows="3" required></textarea>
+            </div>
+            <button onclick="updateBlock()" class="btn btn-success">Змінити</button>
+            <button type="submit" class="btn btn-danger btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                </svg>
+            </button>
+        </div>
+
     </div>
 @endsection
 
 @section('scripts')
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let links = @json($links);
-    let blocks = @json($blocks);
 
-    let matr = buildMatrix(links);
-    
-    console.log(matr);
+const graph = {
+    nodes: @json($blocks),
+    links: @json($links)
+};
 
-    matr = transpose(matr);
+var width = window.innerWidth;
+var height = window.innerHeight - 60;
 
-    levelRepeat(matr);
+const svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
 
-    drawMatrix(matr);
+const simulation = d3.forceSimulation(graph.nodes)
+    .force("link", d3.forceLink(graph.links).id(d => d.id).distance(150))
+    .force("charge", d3.forceManyBody().strength(-500))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+// Створюємо лінії (зв'язки)
+const link = svg.append("g")
+    .selectAll("line")
+    .data(graph.links)
+    .enter()
+    .append("line")
+    .attr("stroke", "#999")
+    .attr("stroke-width", 3);
+
+// Створюємо вузли у вигляді груп
+const node = svg.append("g")
+    .selectAll("g")
+    .data(graph.nodes)
+    .enter()
+    .append("g")
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended))
+    .on('click', function(d) { handleBlockClick(d) });
+
+// Додаємо прямокутники для карток
+node.append("rect")
+    .attr("width", d => Math.min(d.text.length, 20) * 9)
+    .attr("height", 60)  // Збільшили висоту, щоб вмістити опис
+    .attr("rx", 10)  // заокруглені кути
+    .attr("ry", 10)
+    .attr("id", d => 'rect_' + d.id)
+    .attr("fill", "#69b3a2")
+    .attr("stroke", "#333")
+    .attr("stroke-width", 2);
+
+// Додаємо текст назви всередині карток
+node.append("text")
+    .attr("x", d => Math.min(d.text.length, 20) * 4.5)  // Центруємо текст
+    .attr("y", 20)  // Розміщуємо текст трохи вище по центру
+    .attr("id", d => 'title_' + d.id)
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .attr("fill", "#fff")
+    .text(d => d.title);
+
+// Додаємо текст опису під назвою
+node.append("text")
+    .attr("x", d => Math.min(d.text.length, 20) * 4.5)
+    .attr("y", 40)
+    .attr("id", d => 'text_' + d.id)
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .attr("fill", "#fff")
+    .text(d => d.text.length > 20 ? d.text.substring(0, 20) + '...' : d.text);
+
+let curr_rect = 0;
+
+function handleBlockClick(block){
+    let data = block.target.__data__;
+    console.log(data.id + " => " + data.title + " (" + data.text + ")");
+
+    document.getElementById('block_title').value = data.title;
+    document.getElementById('block_text').value = data.text;
+
+    d3.select("#rect_" + curr_rect).attr('fill', "#69b3a2");
+    d3.select("#rect_" + data.id).attr('fill', "#11915c");
+    curr_rect = data.id;
+}
+
+function updateBlock() {
+    let title = document.getElementById('block_title').value;
+    let text = document.getElementById('block_text').value;
+
+    let formData = {
+        id: curr_rect,
+        title: title,
+        text: text,
+        _token: document.querySelector('input[name=_token]').value
+    };
+
+    fetch('/updatestory', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': formData._token
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            d3.select("#title_" + curr_rect).text(title);
+            d3.select("#text_" + curr_rect).text(text);
+
+            node._groups[0].filter(function(g) {return g.__data__.id == curr_rect})[0].__data__.title = title;
+            node._groups[0].filter(function(g) {return g.__data__.id == curr_rect})[0].__data__.text = text;
+
+            showAlert('Частинку оновлено');
+        } else 
+            showAlert('Поле задовге або пусте', 'warning');
+    }).catch(error => { console.error('Error:', error);});
+
+}
+
+// function for d3
+simulation.on("tick", () => {
+    link.attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node.attr("transform", d => `translate(${d.x - 60}, ${d.y - 40})`);
 });
 
-
-function levelRepeat(matrix) {
-    let moved = [];
-
-    for(let i = 0; i < matrix[0].length; i++) {
-        for(let j = 0; j < matrix.length - 1; j++){
-            if(matrix[j][i] == matrix[j + 1][i]){
-                matrix[j][i] = 0;
-                moved.push(i);
-            }
-        }
-    }
-    console.log(moved);
-
-    const rows = matrix.length;
-    const cols = matrix[0].length;
-
-    for (let row = rows - 1; row > 0; row--) {
-        let block = [];
-
-        moved.forEach(el => {
-            block[el] = matrix[row][el];
-            matrix[row][el] = 0;
-        });
-
-        let can_move = true;
-        block.forEach(el => {
-            if(matrix[row].includes(el))
-                can_move = false;
-        });
-
-        if(can_move){
-            moved.forEach(el => {
-                matrix[row + 1][el] = block[el];
-            });
-        } else {
-            moved.forEach(el => {
-                matrix[row][el] = block[el];
-            });
-        }
-    }
+function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
 }
 
-function transpose(matrix) {
-    return matrix[0].map((col, c) => matrix.map((row, r) => matrix[r][c]));
+function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
 }
 
-function drawMatrix(matrix) {
-    const container = document.createElement('div');
-    container.classList.add('container', 'mt-5');
-
-    let contrast = Math.min.apply(null, matrix.flat().filter(Boolean));;
-
-    matrix.forEach(row => {
-        // Створюємо div для рядка
-        const rowDiv = document.createElement('div');
-        rowDiv.classList.add('row', 'justify-content-center'); // Bootstrap row з вирівнюванням по центру та відступом знизу
-
-        // Проходимо по кожному елементу (блоку) в рядку
-        row.forEach(block => {
-            // Створюємо div для кожного блоку
-            const blockDiv = document.createElement('div');
-            blockDiv.classList.add('col-auto', 'p-2', 'border', 'text-center'); // Bootstrap колонки і стилі для блоку
-            blockDiv.textContent = `[ ${block==0?'.....':block} ]`; // Тут можна виводити текст або id блоку
-            blockDiv.style.backgroundColor =`rgb(${240/(block-contrast+1)},${(block-contrast)*16},0)`;
-
-            // Додаємо блок до рядка
-            rowDiv.appendChild(blockDiv);
-        });
-
-        // Додаємо рядок до контейнера
-        container.appendChild(rowDiv);
-    });
-
-    document.body.appendChild(container);
+function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
 }
-
-function buildMatrix(edges) {
-    let paths = [];
-    let nodeMap = {};
-
-    // Створюємо мапу, де ключ - це вершина "a", а значення - це масив вершин "b"
-    edges.forEach(({ a, b }) => {
-        if (!nodeMap[a]) {
-            nodeMap[a] = [];
-        }
-        nodeMap[a].push(b);
-    });
-
-    // Рекурсивна функція для побудови шляхів
-    function traverse(node, path) {
-        // Додаємо вузол до шляху
-        path.push(node);
-
-        // Якщо немає дочірніх вузлів, шлях завершено
-        if (!nodeMap[node]) {
-            paths.push([...path]); // Копіюємо поточний шлях і додаємо в список шляхів
-            return;
-        }
-
-        // Проходимо по всіх дочірніх вузлах
-        nodeMap[node].forEach(child => {
-            traverse(child, [...path]); // Копіюємо шлях для кожної гілки
-        });
-    }
-
-    // Починаємо з вузла 1 (початок графа)
-    traverse({{ $start->id }}, []);
-
-    // Знаходимо максимальну довжину шляху
-    let maxLength = Math.max(...paths.map(path => path.length));
-
-    // Доповнюємо коротші шляхи останнім елементом до досягнення максимальної довжини
-    paths = paths.map(path => {
-        while (path.length < maxLength) {
-            path.push(path[path.length - 1]);
-        }
-        return path;
-    });
-
-    return paths;
-}
-
-// const edges = [
-    //     { a: 1, b: 2 },
-    //     { a: 1, b: 3 },
-    //     { a: 2, b: 4 },
-    //     { a: 2, b: 5 },
-    //     { a: 3, b: 6 },
-    //     { a: 3, b: 7 },
-    //     { a: 4, b: 8 },
-    //     { a: 5, b: 8 },
-    //     { a: 6, b: 9 },
-    //     { a: 7, b: 9 },
-    //     { a: 8, b: 10 },
-    //     { a: 9, b: 10 }
-    // ];
 
 </script>
 @endsection

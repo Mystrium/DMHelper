@@ -52,4 +52,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
 
+    Route::post(     'updatestory',  [StoryController::class, 'updateajax']);
+
 });

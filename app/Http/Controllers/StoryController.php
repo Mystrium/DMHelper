@@ -100,8 +100,8 @@ class StoryController extends Controller {
         foreach($raw as $block){
             foreach($block->linkedTo as $link){
                 $links[] = [
-                    'a' => $block->id, 
-                    'b' => $link->id
+                    'source' => $block->id, 
+                    'target' => $link->id
                 ];
             }
 
@@ -114,4 +114,28 @@ class StoryController extends Controller {
 
         return view('game.storytest', compact('start', 'links', 'blocks', 'raw'));
     }
+
+
+    function updateajax(Request $request){
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:50',
+                'text' => 'required|string|max:300',
+            ]);
+
+            $story = Story::findOrFail($request->id);
+
+            $story->title = $validated['title'];
+            $story->text = $validated['text'];
+            $story->save();
+
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
+    }
+
 }
