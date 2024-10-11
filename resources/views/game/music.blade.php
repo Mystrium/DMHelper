@@ -97,7 +97,7 @@
                             <label class="form-label">Посилання на YouTube</label>
                             <input type="text" class="form-control" id="youtube_url" required>
                         </div>
-                        <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
+                        <button onclick="uploadMusic()" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
                     </form>
                 </div>
             </div>
@@ -117,9 +117,7 @@
 
     function changeCateg(id) { document.getElementById('music_category_id').value = id; }
 
-    document.getElementById('music-upload-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-
+    function uploadMusic() {
         let formData = {
             music_list_id: document.getElementById('music_list_id').value,
             music_category_id: document.getElementById('music_category_id').value,
@@ -145,7 +143,7 @@
         }).catch(error => { console.error('Error:', error);});
 
         document.getElementById('youtube_url').value = '';
-    });
+    }
 
     function placeMusic(msc){
         const music = document.createElement('div');

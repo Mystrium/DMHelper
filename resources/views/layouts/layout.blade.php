@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,8 +11,10 @@
     </head>
 
     <body>
-        <div class="pb-5"></div>
-        @include('layouts.header')
+        <div class="{{!request()->has('play')?'pb-5':''}}"></div>
+        @if(!request()->has('play'))
+            @include('layouts.header')
+        @endif
 
         @yield('content')
 

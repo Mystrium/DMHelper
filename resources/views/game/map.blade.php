@@ -144,21 +144,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="marker-upload-form">
-                    @csrf
-                    <input type="hidden" id="marker_parrent_map" value="0">
-                    <input type="hidden" id="marker_x" name="x" value="0">
-                    <input type="hidden" id="marker_y" name="y" value="0">
-                    <div class="mb-3">
-                        <label class="form-label">Назва мітки</label>
-                        <input type="text" class="form-control" id="marker_title" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Опис мітки</label>
-                        <textarea class="form-control" id="marker_text" name="text" required></textarea>
-                    </div>
-                    <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
-                </form>
+                <input type="hidden" id="marker_parrent_map" value="0">
+                <input type="hidden" id="marker_x" name="x" value="0">
+                <input type="hidden" id="marker_y" name="y" value="0">
+                <div class="mb-3">
+                    <label class="form-label">Назва мітки</label>
+                    <input type="text" class="form-control" id="marker_title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Опис мітки</label>
+                    <textarea class="form-control" id="marker_text" name="text" required></textarea>
+                </div>
+                <button onclick="uploadMarker()" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
             </div>
         </div>
     </div>
@@ -186,7 +183,18 @@ let isDrag = false;
 let mouseX = 0;
 let mouseY = 0;
 
+let uninnit = true;
+setTimeout(function() {
+    if(uninnit)
+        initializeMaps();
+}, 1000);
+
 window.addEventListener("load", (event) => {
+    uninnit = true;
+    initializeMaps();
+});
+
+function initializeMaps() {
     document.querySelectorAll('.map-wrapper').forEach((wrapper) => {
         const mapId = wrapper.getAttribute('data-id');
         
@@ -209,7 +217,7 @@ window.addEventListener("load", (event) => {
             placeMarker(marker); 
         });
     });
-});
+}
 
 function centerMap(id, scale){
     let mapCont = document.querySelectorAll('.map-container')[0];
@@ -421,9 +429,7 @@ function addMarkerHandler() {
     }
 }
 
-document.getElementById('marker-upload-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
+function uploadMarker() {
     let map_id = document.getElementById('marker_parrent_map').value;
     let formData = {
         map_id: map_id,
@@ -456,7 +462,7 @@ document.getElementById('marker-upload-form').addEventListener('submit', functio
 
     document.getElementById('marker_title').value = '';
     document.getElementById('marker_text').value = '';
-});
+}
 
 function deleteMarker(btn) {
     const markerId = btn.getAttribute('data-id');

@@ -54,4 +54,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post(     'updatestory',  [StoryController::class, 'updateajax']);
 
+    Route::view('/play', 'game.main');
+
 });
