@@ -86,7 +86,7 @@
                         @csrf
                         <input type="hidden" id="music_list_id" value="{{$musicList->id}}">
                         <div class="mb-3">
-                            <label for="playlistTitle" class="form-label">Категорія</label>
+                            <label class="form-label">Категорія</label>
                             <select class="form-select" id="music_category_id">
                                 @foreach($categories as $categ)
                                     <option value="{{$categ->id}}">{{$categ->title}}</option>

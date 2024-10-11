@@ -15,6 +15,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="position-absolute top-0 end-0 p-3">
+                        <div class="dropdown">
+                            <a class="dropdown-item" data-bs-toggle="dropdown" onclick="focusSearch()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                </svg>
+                            </a>
+                            <ul class="dropdown-menu" id="markers_{{$map->id}}" style="max-height: 500px; overflow-y: auto;">
+                                <input type="text" class="form-control" id="marker_search" onkeyup="searchMarkers(this.value)">
+                                @foreach ($map->markers as $marker)
+                                    <li id="mark_{{$marker->id}}">
+                                        <a class="dropdown-item search" onclick="highlightMarker({{$marker->id}})">{{$marker->title}}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             @endforeach
         </div>
@@ -27,13 +44,13 @@
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" onclick="showMarkers(this)" checked>
-                    <label class="form-check-label" for="option2">Мітки</label>
+                    <label class="form-check-label">Мітки</label>
                 </div>
             </div>
         @endif
 
         @if(!request()->has('play'))
-            <div class="position-absolute top-0 end-0 p-3">
+            <div class="position-absolute top-0 end-0 p-3 mt-5">
                 <div class="dropdown">
                     <a class="bg-transparent text-black pb-2" data-bs-toggle="dropdown">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -152,7 +169,11 @@
 @section('scripts')
 <script>
 let currentMap = {{$maps[0]->id ?? 0}};
-function changeActiveMap(id) { currentMap = id; }
+function changeActiveMap(id) { 
+    currentMap = id;
+    document.getElementById('marker_search').value = '';
+    searchMarkers('');
+}
 
 let mapWrapper = {};
 let mapImage = {};
@@ -176,7 +197,7 @@ window.addEventListener("load", (event) => {
         offset[mapId] = { x: 0, y: 0 };
 
         maxZoom[mapId] = calcMaxZoom(mapImage[mapId], 15);
-        minZoom[mapId] = calcMinZoom(mapImage[mapId], 0.9);
+        minZoom[mapId] = calcMinZoom(mapImage[mapId], 0.8);
 
         centerMap(mapId, minZoom[mapId]);
         wrapperListeners(mapId);
@@ -403,8 +424,9 @@ function addMarkerHandler() {
 document.getElementById('marker-upload-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
+    let map_id = document.getElementById('marker_parrent_map').value;
     let formData = {
-        map_id: document.getElementById('marker_parrent_map').value,
+        map_id: map_id,
         title: document.getElementById('marker_title').value,
         text: document.getElementById('marker_text').value,
         x: document.getElementById('marker_x').value,
@@ -425,6 +447,8 @@ document.getElementById('marker-upload-form').addEventListener('submit', functio
     .then(data => {
         if (data.marker) {
             placeMarker(data.marker);
+            document.getElementById("markers_" + map_id).innerHTML += 
+                `<li id="mark_${data.marker.id}"><a class="dropdown-item search">${data.marker.title}</a></li>`;
             showAlert('Мітку додано');
         } else 
             showAlert('Поле задовге або пусте', 'warning');
@@ -450,6 +474,7 @@ function deleteMarker(btn) {
         .then(data => {
             if (data.success) {
                 document.getElementById("marker_" + markerId).remove();
+                document.getElementById("mark_" + markerId).remove();
                 showAlert('Мітку видаленно');
             } else showAlert(data.message, 'warning');
         })
@@ -482,6 +507,7 @@ function changeMarker(btn) {
         if(data.success){
             changeTitle.setAttribute('prev_text', changeTitle.value);
             changeText.setAttribute('prev_text', changeText.value);
+            document.querySelector("#mark_" + markerId + " a").innerHTML = changeTitle.value;
             showAlert('Маткер оновленно');
         } else {
             changeTitle.value = changeTitle.getAttribute('prev_text');
@@ -491,12 +517,32 @@ function changeMarker(btn) {
     }).catch(error => { console.error('Error:', error); });
 }
 
+function focusSearch() {
+    document.getElementById('marker_search').focus();
+}
+
+function searchMarkers(srch) {
+    const filter = srch.toLowerCase();
+    const a = document.getElementsByClassName("search");
+    for (let i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+        } else {
+            a[i].style.display = "none";
+        }
+    }
+}
+
+function highlightMarker(id) {
+    const marker = document.getElementById("marker_" + id).getBoundingClientRect();
+    const map = mapImage[currentMap].getBoundingClientRect();
+
+    offset[currentMap].x = map.left - marker.left + window.innerWidth / 2;
+    offset[currentMap].y = map.top - marker.top + window.innerHeight / 2 - 100;
+
+    setImageTransform(offset[currentMap].x, offset[currentMap].y, mapImage[currentMap].style.scale * 1, currentMap);
+}
+
 </script>
 @endsection
-
-<!--
-    todo all map markers list
-    todo markers search by map
-    todo marker list center to marker
-    todo map play mode
--->
