@@ -5,6 +5,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\MusicListController;
+use App\Http\Controllers\PlayController;
 use App\Http\Controllers\StoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -19,7 +20,6 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::view('/players', 'game.players');
-    Route::view('/fight', 'game.fight');
 
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
     Route::post(    'playlist/add', [MusicListController::class, 'create'])->name('playlist.add');
@@ -52,8 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
 
-    Route::post(     'updatestory',  [StoryController::class, 'updateajax']);
+    Route::post(    'updatestory',  [StoryController::class, 'updateajax']);
 
-    Route::view('/play', 'game.main');
+    Route::get(    'play/{game_id}',[PlayController::class, 'index'])->name('play');
+    Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');
 
 });

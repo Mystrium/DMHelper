@@ -3,18 +3,19 @@
 @section('title', 'Історія')
 
 @section('content')
-    <div class="container my-5">
-        <h3 class="pb-3 text-center">Заголовок для Влада</h3>
-        <div id="story-container" class="row justify-content-center text-center">
-            @foreach($start as $story)
-                <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block newblock"> 
-                    <h5>{{ $story->title }}</h5>
-                    <textarea class="form-control mb-3" rows="4">{{ $story->text }}</textarea>
-                </div>
-            @endforeach
-
+    <div class="position-relative">
+        <div id="mapContainer" class="border" style="height: 640px; overflow-y: auto; overflow-x: hidden; position: relative;">
+            <h3 class="py-3 text-center">{{$title}}</h3>
+            <div id="story-container" class="row justify-content-center text-center">
+                @foreach($start as $story)
+                    <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block newblock"> 
+                        <h5>{{ $story->title }}</h5>
+                        <textarea class="form-control mb-3" rows="4">{{ $story->text }}</textarea>
+                    </div>
+                @endforeach
+            </div>
+            <div style="height:300px"></div>
         </div>
-        <div style="height:300px"></div>
     </div>
 @endsection
 
@@ -35,7 +36,8 @@
                 parentBlock.classList.add('active-block');
                 parentBlock.classList.remove('inactive-block');
 
-                window.scrollTo({ top: parentBlock.offsetTop - 250, behavior: 'smooth' });
+                document.getElementById('mapContainer')
+                    .scrollTo({ top: parentBlock.offsetTop - window.innerHeight / 2 + 160, behavior: 'smooth' });
             });
         });
     }
@@ -94,6 +96,5 @@
             }
         });
     });
-
 </script>
 @endsection

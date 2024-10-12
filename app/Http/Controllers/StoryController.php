@@ -71,9 +71,10 @@ class StoryController extends Controller {
     }
 
     public function story($gameId) {
+        $title = Game::findOrFail($gameId)->title;
         $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
 
-        return view('game.story', compact('start'));
+        return view('game.story', compact('start', 'title'));
     }
 
     public function next(Request $request) {

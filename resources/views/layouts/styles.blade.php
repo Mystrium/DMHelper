@@ -120,4 +120,11 @@
         text-align: center;
     }
 
+    .grid { display: grid; }
+
+    .grid-cell {
+        border: 1px solid #000;
+        cursor: pointer;
+    }
+
 </style>

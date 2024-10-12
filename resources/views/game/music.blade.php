@@ -32,10 +32,10 @@
         </ul>
     </div>
 
-    <div class="tab-content pt-4" style="background-color:lightgray">
+    <div class="tab-content pt-2" style="background-color:lightgray">
         @foreach($categories as $categ)
             <div class="tab-pane fade show {{$loop->first?'active':''}}" id="pl{{$categ->id}}" role="tabpanel" aria-labelledby="playlist1-tab">
-                <div class="d-flex overflow-auto pt-4 pb-5" style="white-space: nowrap;" id="music_category_{{$categ->id}}">
+                <div class="d-flex overflow-auto pt-4 pb-4" style="white-space: nowrap;" id="music_category_{{$categ->id}}">
                     @foreach($musics as $music)
                         @if($music->music_category_id == $categ->id)
                             <div id="music_{{$music->id}}" class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">

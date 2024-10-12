@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane show active" id="map" role="tabpanel" aria-labelledby="map-tab">
+        <div class="tab-pane" id="map" role="tabpanel" aria-labelledby="map-tab">
             <div id="map_cont"></div>
         </div>
         <div class="tab-pane" id="players" role="tabpanel" aria-labelledby="story-tab">
@@ -12,13 +12,11 @@
                 <h1 class="position-absolute top-50 start-50 translate-middle-x">in development...</h1>
             </div>
         </div>
-        <div class="tab-pane" id="story" role="tabpanel" aria-labelledby="story-tab">
+        <div class="tab-pane show active" id="story" role="tabpanel" aria-labelledby="story-tab">
             <div id="story_cont"></div>
         </div>
         <div class="tab-pane" id="fight" role="tabpanel" aria-labelledby="story-tab">
-            <div id="fight_cont">
-                <h1 class="position-absolute top-50 start-50 translate-middle-x">in development...</h1>
-            </div>
+            <div id="fight_cont"></div>
         </div>
         <div class="tab-pane" id="music" role="tabpanel" aria-labelledby="music-tab">
             <div id="music_cont"></div>
@@ -28,13 +26,13 @@
     <footer class="bg-dark text-white py-2 mt-auto footer fixed-bottom">
         <ul class="nav">
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark active" data-bs-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">Мапа</a>
+                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">Мапа</a>
             </li>            
             <li class="nav-item px-2" role="presentation">
                 <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#players" role="tab" aria-controls="players" aria-selected="false">Гравці</a>
             </li>
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#story" role="tab" aria-controls="story" aria-selected="false">Сюжет</a>
+                <a class="nav-link btn btn-success text-dark active" data-bs-toggle="tab" href="#story" role="tab" aria-controls="story" aria-selected="false">Сюжет</a>
             </li>
             <li class="nav-item px-2" role="presentation">
                 <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#fight" role="tab" aria-controls="fight" aria-selected="false">Бій</a>
@@ -47,14 +45,17 @@
 @endsection
 
 @section('scripts')
+<!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> -->
 <script>
+    
 $(document).ready(function() {
-    loadPage('/map/3?play=true', 'map_cont');
-    loadPage('/story/play/3?play=true', 'story_cont');
-    loadPage('/music/11?play=true', 'music_cont');
+    loadPage('/map/{{$game_id}}?play=true', 'map_cont');
+    loadPage('/story/play/{{$game_id}}?play=true', 'story_cont');
+    loadPage('/music/{{$music_list}}?play=true', 'music_cont');
+    loadPage('/fight?play=true', 'fight_cont');
 
     // loadPage('...', 'players_cont');
-    // loadPage('...', 'fight_cont');
 });
 
 function loadPage(url, container) {
@@ -76,7 +77,3 @@ window.addEventListener("beforeunload", function (e) {
 });
 </script>
 @endsection
-
-<!-- 
-    todo fix map search dropdown
--->

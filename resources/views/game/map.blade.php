@@ -205,7 +205,7 @@ function initializeMaps() {
         offset[mapId] = { x: 0, y: 0 };
 
         maxZoom[mapId] = calcMaxZoom(mapImage[mapId], 15);
-        minZoom[mapId] = calcMinZoom(mapImage[mapId], 0.8);
+        minZoom[mapId] = calcMinZoom(mapImage[mapId], 0.7);
 
         centerMap(mapId, minZoom[mapId]);
         wrapperListeners(mapId);
@@ -220,10 +220,8 @@ function initializeMaps() {
 }
 
 function centerMap(id, scale){
-    let mapCont = document.querySelectorAll('.map-container')[0];
-
-    offset[id].x = (mapCont.clientWidth - mapImage[id].naturalWidth * scale) / 2;
-    offset[id].y = (mapCont.clientHeight - mapImage[id].naturalHeight * scale) / 2;
+    offset[id].x = (window.innerWidth - mapImage[id].naturalWidth * scale) / 2;
+    offset[id].y = (window.innerHeight * 0.8 - mapImage[id].naturalHeight * scale) / 2;
 
     markerContainer[id].style.width  = mapImage[id].naturalWidth  + "px";
     markerContainer[id].style.height = mapImage[id].naturalHeight + "px";
@@ -340,19 +338,15 @@ function setImageTransform(x, y, scale, id){
 }
 
 function calcMaxZoom(image, pixelDensity){
-    let mapCont = document.querySelectorAll('.map-container')[0];
-
-    const scaleByWidth = (image.naturalWidth * pixelDensity) / mapCont.clientWidth;
-    const scaleByHeight = (image.naturalHeight * pixelDensity) / mapCont.clientHeight;
+    const scaleByWidth = (image.naturalWidth * pixelDensity) / window.innerWidth;
+    const scaleByHeight = (image.naturalHeight * pixelDensity) / window.innerHeight;
 
     return Math.max(scaleByWidth, scaleByHeight);
 }
 
 function calcMinZoom(image, pixelDensity){
-    let mapCont = document.querySelectorAll('.map-container')[0];
-
-    const scaleByWidth = mapCont.clientWidth / image.naturalWidth  * pixelDensity;
-    const scaleByHeight = mapCont.clientHeight / image.naturalHeight  * pixelDensity;
+    const scaleByWidth = window.innerWidth / image.naturalWidth  * pixelDensity;
+    const scaleByHeight = window.innerHeight / image.naturalHeight  * pixelDensity;
 
     return Math.min(scaleByWidth, scaleByHeight);
 }
