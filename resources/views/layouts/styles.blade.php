@@ -127,4 +127,17 @@
         cursor: pointer;
     }
 
+    .npc {
+        position: absolute;
+        background-color: rgba(0, 255, 0, 0.5); /* Колір для NPC */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    .npc.active {
+        background-color: rgba(255, 0, 0, 0.7); /* Колір для активного NPC */
+    }
+
 </style>

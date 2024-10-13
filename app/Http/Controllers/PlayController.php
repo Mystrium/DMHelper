@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 
-
 class PlayController extends Controller {
     function index($game_id) {
         $game = Game::findOrFail($game_id);
@@ -15,9 +14,9 @@ class PlayController extends Controller {
 
     function fight() {
         $players = [
-            ['id' => 1, 'name' => 'vergil', 'initiative' => 2, 'hp' => 10, 'pos' => 0],
-            ['id' => 2, 'name' => 'miric', 'initiative' => 3, 'hp' => 5, 'pos' => 0],
-            ['id' => 3, 'name' => 'blacke', 'initiative' => 1, 'hp' => 6, 'pos' => 0],
+            1 => ['name' => 'vergil', 'initiative' => 2, 'hp' => 10, 'armor' => 13],
+            2 => ['name' => 'miric', 'initiative' => 3, 'hp' => 5, 'armor' => 16],
+            4 =>['name' => 'blacke', 'initiative' => 1, 'hp' => 6, 'armor' => 10],
         ];
 
         return view('game.fight', compact('players'));
