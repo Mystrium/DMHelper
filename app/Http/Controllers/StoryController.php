@@ -91,31 +91,64 @@ class StoryController extends Controller {
     }
 
     public function test($gameId){
-        $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get()[0];
-        $game = Game::findOrFail($gameId);
-        $raw = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
+        $start = Story::whereDoesntHave('linkedFrom')
+            ->where('game_id', $gameId)
+            ->get();
 
         $links = [];
         $blocks = [];
 
-        foreach($raw as $block){
-            foreach($block->linkedTo as $link){
-                $links[] = [
-                    'a' => $block->id, 
-                    'b' => $link->id
+        if(count($start) > 0){
+            $game = Game::findOrFail($gameId);
+            $raw = $game->story()->with('linkedTo')->orderBy('id', 'desc')->get();
+
+            foreach($raw as $block){
+                foreach($block->linkedTo as $link){
+                    $links[] = [
+                        'a' => $block->id, 
+                        'b' => $link->id
+                    ];
+                }
+
+                $blocks[] = [
+                    'id' => $block->id,
+                    'title' => $block->title,
+                    'text' => $block->text
                 ];
             }
-
-            $blocks[] = [
-                'id' => $block->id,
-                'title' => $block->title,
-                'text' => $block->text
-            ];
         }
 
-        return view('game.storytest', compact('start', 'links', 'blocks', 'raw'));
+        return view('game.storytest', compact('start', 'links', 'blocks', 'gameId'));
     }
 
+    function createajax(Request $request) {
+        try{
+            $validated = $request->validate([
+                'title' => 'required|string|max:50',
+                'text' => 'required|string|max:300',
+            ]);
+
+            $block = Story::create([
+                'game_id' => $request->input('game_id'),
+                'title' => $validated['title'],
+                'text' => $validated['text'],
+            ]);
+
+            if($request->input('id_from') != 0){
+                StoryLink::create([
+                    'story_from_id' => $request->input('id_from'),
+                    'story_to_id' => $block->id
+                ]);
+            }
+
+            return response()->json(['block' => $block]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e
+            ], 422);
+        }
+    }
 
     function updateajax(Request $request){
         try {
@@ -137,6 +170,15 @@ class StoryController extends Controller {
                 'errors' => $e->errors()
             ], 422);
         }
+    }
+
+    function destroyajax($id) {
+        $story = Story::findOrFail($id);
+        if ($story) {
+            $story->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 
 }

@@ -187,7 +187,7 @@ let uninnit = true;
 setTimeout(function() {
     if(uninnit)
         initializeMaps();
-}, 1000);
+}, 3000);
 
 window.addEventListener("load", (event) => {
     uninnit = true;

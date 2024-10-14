@@ -52,7 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
 
+    Route::post(    'addstory',     [StoryController::class, 'createajax']);
     Route::post(    'updatestory',  [StoryController::class, 'updateajax']);
+    Route::delete(  'delstory/{id}',[StoryController::class, 'destroyajax']);
 
     Route::get(    'play/{game_id}',[PlayController::class, 'index'])->name('play');
     Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');
