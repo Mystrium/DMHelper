@@ -1,14 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MusicListController;
+use App\Http\Controllers\MarkerController;
+use App\Http\Controllers\StoryController;
+use App\Http\Controllers\MusicController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlayController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MapController;
-use App\Http\Controllers\MarkerController;
-use App\Http\Controllers\MusicController;
-use App\Http\Controllers\MusicListController;
-use App\Http\Controllers\PlayController;
-use App\Http\Controllers\StoryController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
 Route::get('/', function () { return view('welcome'); });
 

@@ -3,6 +3,7 @@
 @section('title', 'Історія')
 
 @section('content')
+<div class="container-fluid">
     <div id="graph-container" style="position: relative; height: 2000px; width: 100%;"></div>
 
     <div class="form-container position-fixed bottom-0 start-50 translate-middle-x text-center">
@@ -30,6 +31,27 @@
         </button>
     </div>
 
+    <div class="top-0 end-0 position-fixed pe-2" style="padding-top:70px">
+        <div class="dropdown">
+            <a class="dropdown-item" data-bs-toggle="dropdown" onclick="focusBlockSearch()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </a>
+            <ul class="dropdown-menu" id="blocks_search_dropdown" style="max-height: 500px; overflow-y: auto;">
+                <input type="text" class="form-control" id="block_search" onkeyup="searchBlocks(this.value)">
+                <div id="block_list">
+                    @foreach ($blocks as $block)
+                        <li id="block_{{$block['id']}}">
+                            <a class="dropdown-item search" onclick="highlightSearch({{$block['id']}})">{{$block['title']}}</a>
+                        </li>
+                    @endforeach
+                </div>
+            </ul>
+        </div>
+    </div>
+
+</div>
 
 <div class="modal fade" id="addStory" tabindex="-1" aria-labelledby="addStoryLab" aria-hidden="true">
     <div class="modal-dialog">
@@ -82,11 +104,18 @@ function innitSvg(){
 
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
 
+    defs.appendChild(innitMarker());
+    svg.appendChild(defs);
+
+    return svg;
+}
+
+function innitMarker(){
     let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
     marker.setAttribute("id", "arrowhead");
     marker.setAttribute("markerWidth", "10");
     marker.setAttribute("markerHeight", "7");
-    marker.setAttribute("refX", "20");
+    marker.setAttribute("refX", "25");
     marker.setAttribute("refY", "3.5");
     marker.setAttribute("orient", "auto");
     marker.setAttribute("markerUnits", "strokeWidth");
@@ -97,11 +126,7 @@ function innitSvg(){
 
     marker.appendChild(arrow);
 
-    defs.appendChild(marker);
-
-    svg.appendChild(defs);
-
-    return svg;
+    return marker;
 }
 
 function getChildren(nodeId) {
@@ -146,10 +171,15 @@ function drawLine(from, to) {
     const endNode = document.querySelector(`[data-id="${to}"]`);
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     
-    line.setAttribute("x1", startNode.offsetLeft + startNode.offsetWidth / 2);
-    line.setAttribute("y1", startNode.offsetTop + startNode.offsetHeight / 2);
-    line.setAttribute("x2", endNode.offsetLeft + endNode.offsetWidth / 2);
-    line.setAttribute("y2", endNode.offsetTop + endNode.offsetHeight / 2);
+    let x1 = startNode.offsetLeft + startNode.offsetWidth / 2;
+    let x2 = endNode.offsetLeft + endNode.offsetWidth / 2;
+    let y1 = startNode.offsetTop + startNode.offsetHeight / 2;
+    let y2 = endNode.offsetTop + endNode.offsetHeight / 2;
+
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
     line.setAttribute("stroke", "black");
     line.setAttribute("stroke-width", "2");
     line.setAttribute('start-node', from);
@@ -195,6 +225,7 @@ function startDrag(event) {
     activeBlock = event.target;
     deltaX = parseInt(activeBlock.style.left) - event.pageX;
     deltaY = parseInt(activeBlock.style.top) - event.pageY;
+    highlightBlock(activeBlock.getAttribute('data-id'));
 }
 
 function dragging(event) {
@@ -354,14 +385,43 @@ function deleteBlock() {
     }).catch(error => console.error('Error:', error));
 }
 
+function focusBlockSearch() {
+    document.getElementById('block_search').focus();
+}
+
+function searchBlocks(srch) {
+    const filter = srch.toLowerCase();
+    const items = document.getElementsByClassName("search");
+    for (let i = 0; i < items.length; i++) {
+        let txtValue = items[i].textContent || items[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1)
+            items[i].style.display = "";
+        else
+            items[i].style.display = "none";
+    }
+}
+
+function highlightBlock(id) {
+    document.querySelectorAll('.node').forEach(node => {
+        node.classList.remove('border', 'border-5', 'border-warning');
+    });
+    const block = document.querySelector(`[data-id="${id}"]`);
+    block.classList.add('border', 'border-5', 'border-warning');    
+    window.scrollTo(parseInt(block.style.left), parseInt(block.style.top) - window.innerHeight / 2);
+}
+
+function highlightSearch(id) {
+    highlightBlock(id)
+    selectNode(id);
+}
+
+highlightSearch({{$start[0]->id ?? 0 }})
 
 </script>
 @endsection
 
-<!-- 
-    search nodes by title, text
-        zoom-in & highlight find node
-    todo grab links
+<!--
+    todo grab links ???
         update link
     todo delete node jump link 
         (oo -> [1] -> oo ???)
