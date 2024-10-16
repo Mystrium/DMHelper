@@ -157,11 +157,48 @@ class StoryController extends Controller {
                 'text' => 'required|string|max:300',
             ]);
 
-            $story = Story::findOrFail($request->id);
+            $story_id = $request->id;
+            $story = Story::findOrFail($story_id);
 
             $story->title = $validated['title'];
             $story->text = $validated['text'];
             $story->save();
+
+            $add_links = $request->input('add_links', []);
+            $del_links = $request->input('del_links', []);
+            if(count($add_links) > count($del_links)){
+                for($i = 0; $i < count($del_links); $i++){
+                    $to_edit = StoryLink::where([
+                            ['story_from_id', '=', $story_id],
+                            ['story_to_id', '=', $del_links[$i]]
+                        ])->first();
+                    $to_edit->story_to_id = $add_links[$i];
+                    $to_edit->save();
+                    unset($add_links[$i]);
+                }
+
+                foreach($add_links as $add)
+                    StoryLink::create([
+                            'story_from_id' => $story_id,
+                            'story_to_id' => $add
+                        ]);
+            } else {
+                for($i = 0; $i < count($add_links); $i++){
+                    $to_edit = StoryLink::where([
+                            ['story_from_id', '=', $story_id],
+                            ['story_to_id', '=', $del_links[$i]]
+                        ])->first();
+                    $to_edit->story_to_id = $add_links[$i];
+                    $to_edit->save();
+                    unset($del_links[$i]);
+                }
+
+                foreach($del_links as $del)
+                    StoryLink::where([
+                            ['story_from_id', '=', $story_id],
+                            ['story_to_id', '=', $del]
+                        ])->delete();
+            }
 
             return response()->json(['success' => true]);
         } catch (\Illuminate\Validation\ValidationException $e) {

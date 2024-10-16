@@ -13,6 +13,15 @@
         <div class="form-group">
             <textarea class="form-control" id="block_text" rows="3" required></textarea>
         </div>
+
+        <div class="form-group">
+            <select id="nextNodeSelect" class="form-control select2" multiple="multiple">
+                @foreach ($blocks as $node)
+                    <option value="{{ $node['id'] }}">{{ $node['title'] }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <button data-bs-toggle="modal" data-bs-target="#addStory" class="btn btn-info btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -79,6 +88,13 @@
 @section('scripts')
 <script>
 
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: "Наступна історія (виберіть декілька для розгалуження)",
+        allowClear: true
+    });
+});
+
 let graph = {
     nodes: @json($blocks),
     links: @json($links)
@@ -115,7 +131,7 @@ function innitMarker(){
     marker.setAttribute("id", "arrowhead");
     marker.setAttribute("markerWidth", "10");
     marker.setAttribute("markerHeight", "7");
-    marker.setAttribute("refX", "25");
+    marker.setAttribute("refX", "20");
     marker.setAttribute("refY", "3.5");
     marker.setAttribute("orient", "auto");
     marker.setAttribute("markerUnits", "strokeWidth");
@@ -225,7 +241,6 @@ function startDrag(event) {
     activeBlock = event.target;
     deltaX = parseInt(activeBlock.style.left) - event.pageX;
     deltaY = parseInt(activeBlock.style.top) - event.pageY;
-    highlightBlock(activeBlock.getAttribute('data-id'));
 }
 
 function dragging(event) {
@@ -261,9 +276,14 @@ function moveLines(node) {
 
 let selectedBlock = null;
 function selectNode(id) {
+    highlightBlock(id);
+
     selectedBlock = graph.nodes.find(node => node.id == id);
     document.getElementById('block_title').value = selectedBlock.title;
     document.getElementById('block_text').value  = selectedBlock.text;
+    
+    let links_to = graph.links.filter(link => link.a == id).map(con => con.b);
+    $('#nextNodeSelect').val(links_to).trigger('change');
 }
 
 function addafterBlock() {
@@ -324,10 +344,17 @@ function updateBlock() {
     let title = document.getElementById('block_title');
     let text = document.getElementById('block_text');
 
+    let selected = $('#nextNodeSelect').val().map(a => a * 1);
+    let links_to = graph.links.filter(link => link.a == selectedBlock.id).map(con => con.b);
+    let add = selected.filter(val => !links_to.includes(val)).sort();
+    let del = links_to.filter(val => !selected.includes(val)).sort();
+
     let formData = {
         id: id,
         title: title.value,
         text: text.value,
+        add_links: add,
+        del_links: del,
         _token: document.querySelector('input[name=_token]').value
     };
 
@@ -345,6 +372,11 @@ function updateBlock() {
             graph.nodes.find(node => node.id == id).title = title.value;
             graph.nodes.find(node => node.id == id).text = text.value;
             document.querySelector(`[data-id="${id}"]`).innerHTML = title.value;
+
+            del.forEach(d => {
+                document.querySelector(`line[start-node="${id}"][end-node="${d}"]`).remove();
+            })
+            add.forEach(a => { drawLine(id, a) });
 
             showAlert('Частинку оновлено');
         } else {
@@ -419,10 +451,3 @@ highlightSearch({{$start[0]->id ?? 0 }})
 
 </script>
 @endsection
-
-<!--
-    todo grab links ???
-        update link
-    todo delete node jump link 
-        (oo -> [1] -> oo ???)
--->
