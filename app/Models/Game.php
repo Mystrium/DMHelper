@@ -27,5 +27,9 @@ class Game extends Model {
         return $this->hasMany(Story::class);
     }
 
+    public function map() {
+        return $this->hasMany(Map::class);
+    }
+
     public $timestamps = false;
 }

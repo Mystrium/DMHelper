@@ -9,7 +9,7 @@ use App\Models\Game;
 class GameController extends Controller {
     function index() {
         $playlists = MusicList::where('user_id', auth()->id())->get();
-        $games = Game::where('user_id', auth()->id())->get();
+        $games = Game::where('user_id', auth()->id())->with('map')->get();
         return view('games', compact('playlists', 'games'));
     }
 

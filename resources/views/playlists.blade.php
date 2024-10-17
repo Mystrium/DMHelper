@@ -8,12 +8,11 @@
         @foreach($playlists as $playlist)
             <div class="col-md-4 md-4 position-relative">
                 <a href="/music/{{$playlist->id}}" style="text-decoration: none">
-                    <div class="game-card" style="background-image: url('https://img.youtube.com/vi/6Em9tLXbhfo/0.jpg');">
+                    <div class="game-card" style="background-image: url('https://img.youtube.com/vi/{{isset($playlist->music[0]) ? $playlist->music[mt_rand(0,count($playlist->music) - 1)]->youtube_url : ''}}/0.jpg');">
                         <div class="game-card-overlay">
                             <div><h3>{{$playlist->title}}</h3></div>
                             <div><h7>{{$playlist->description}}</h7></div>
                         </div>
-
                         <button onclick="changeList(event, '{{$playlist->title}}', '{{$playlist->description}}', '{{$playlist->id}}')" data-bs-toggle="modal" data-bs-target="#changePlaylistModal" type="submit" class="btn btn-warning btn-sm me-2 position-absolute bottom-0 end-0 mb-2 me-5">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
                                 <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
@@ -33,9 +32,10 @@
                     </div>
                 </a>
             </div>
+
         @endforeach
 
-        <div class="col-md-4 md-4">
+        <div class="col-md-4 md-4 mt-4">
             <a data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
                 <div class="game-card" style="background-color: lightgreen;">
                     <div class="game-card-overlay">

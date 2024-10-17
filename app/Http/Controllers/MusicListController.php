@@ -7,7 +7,7 @@ use App\Models\MusicList;
 
 class MusicListController extends Controller {
     function index() {
-        $playlists = MusicList::where('user_id', auth()->id())->get();
+        $playlists = MusicList::where('user_id', auth()->id())->with('music')->get();
         return view('playlists', compact('playlists'));
     }
 
