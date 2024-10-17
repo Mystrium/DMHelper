@@ -35,14 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::put(     'game/{id}',    [GameController::class, 'update'])->name('game.update');
     Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');
 
-    Route::get(     'story/{id}',   [StoryController::class, 'index'])->name('story');
-    Route::post(    'story/next',   [StoryController::class, 'next'])->name('story.next');
-    Route::post(    'story/{id}',   [StoryController::class, 'create'])->name('story.add');
-    Route::put(     'story/{id}',   [StoryController::class, 'update'])->name('story.update');
-    Route::delete(  'story/{id}',   [StoryController::class, 'destroy'])->name('story.destroy');
-    Route::get( 'story/play/{id}',  [StoryController::class, 'story'])->name('story.play');
-    Route::get( 'story/test/{id}',  [StoryController::class, 'test'])->name('story.test');
-
     Route::get(     'map/{id}',     [MapController::class, 'index'])->name('map');
     Route::post(    'addmap/{id}',  [MapController::class, 'create'])->name('map.add');
     Route::post(     'updatemap',   [MapController::class, 'update'])->name('map.update');
@@ -52,9 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
 
-    Route::post(    'addstory',     [StoryController::class, 'createajax']);
-    Route::post(    'updatestory',  [StoryController::class, 'updateajax']);
-    Route::delete(  'delstory/{id}',[StoryController::class, 'destroyajax']);
+    Route::get(     'story/{id}',   [StoryController::class, 'index']);
+    Route::post(    'addstory',     [StoryController::class, 'create']);
+    Route::post(    'updatestory',  [StoryController::class, 'update']);
+    Route::delete(  'delstory/{id}',[StoryController::class, 'destroy']);
+    Route::post(    'story/next',   [StoryController::class, 'next'])->name('story.next');
 
     Route::get(    'play/{game_id}',[PlayController::class, 'index'])->name('play');
     Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');

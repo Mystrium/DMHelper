@@ -50,22 +50,22 @@
 <script>
     
 $(document).ready(function() {
-    loadPage('/map/{{$game_id}}?play=true', 'map_cont');
-    loadPage('/story/play/{{$game_id}}?play=true', 'story_cont');
-    loadPage('/music/{{$music_list}}?play=true', 'music_cont');
-    loadPage('/fight?play=true', 'fight_cont');
+    loadPage('/map/{{$game_id}}',       'map_cont');
+    loadPage('/story/{{$game_id}}',     'story_cont');
+    loadPage('/music/{{$music_list}}',  'music_cont');
+    loadPage('/fight', 'fight_cont');
 
     // loadPage('...', 'players_cont');
 });
 
 function loadPage(url, container) {
     $.ajax({
-        url: url,
+        url: url + '?play=true',
         success: function(response) {
             $('#' + container).html(response);
         },
         error: function() {
-            $('#' + container).html('<p>Смерт сторінки...</p>');
+            $('#' + container).html('<h1>Смерт сторінки...</h1>');
         }
     });
 }

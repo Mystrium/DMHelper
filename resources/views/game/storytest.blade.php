@@ -6,7 +6,10 @@
 <div class="container-fluid">
     <div id="graph-container" style="position: relative; height: 2000px; width: 100%;"></div>
 
-    <div class="form-container position-fixed bottom-0 start-50 translate-middle-x text-center">
+    <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/map/{{$gameId}}"><- Мапа</a>
+    <a class="btn btn-success position-fixed bottom-0 end-0 m-2" href="/story/{{$gameId}}?play=true">Перегляд</a>
+
+    <div class="form-container position-fixed bottom-0 start-50 translate-middle-x text-center mb-1">
         <div class="form-group">
             <input type="text" class="form-control" id="block_title" required>
         </div>

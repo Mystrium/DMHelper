@@ -8,89 +8,14 @@ use App\Models\Story;
 use App\Models\Game;
 
 class StoryController extends Controller {
-    public function index($gameId) {
-        $game = Game::findOrFail($gameId);
-        $blocks = $game->story()->with('linkedTo')->get();
-        return view('game.storyedit', compact( 'game', 'blocks'));
-    }
+    public function index($gameId, Request $request){
+        if($request->input('play') == true) {
+            $title = Game::findOrFail($gameId)->title;
+            $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
 
-    public function create(Request $request, $gameId) {
-        $request->validate([ 
-            'title' => 'required|string|max:50',
-            'text' => 'required|string|max:300',
-        ]);
-
-        $newstory = Story::create([
-            'title' => $request->input('title'),
-            'text' => $request->input('text'),
-            'game_id' => $gameId
-        ]);
-
-        if($request->input('next_stories') != null) {
-            foreach($request->input('next_stories') as $next_story){
-                StoryLink::create([
-                    'story_from_id' => $newstory->id,
-                    'story_to_id' => $next_story
-                ]);
-            }
+            return view('game.story', compact('start', 'title'));
         }
 
-        return back()->withErrors(['msg' => 'Частиннку додано']);
-    }
-
-    function update(Request $request, $id) {
-        $story = Story::findOrFail($id);
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:50',
-            'text' => 'required|string|max:300',
-        ]);
-
-        $story->title = $validated['title'];
-        $story->text = $validated['text'];
-        $story->save();
-
-        StoryLink::where('story_from_id', '=', $story->id)->delete();
-        if($request->input('next_stories') != null) {
-            foreach($request->input('next_stories') as $next_story){
-                StoryLink::create([
-                    'story_from_id' => $story->id,
-                    'story_to_id' => $next_story
-                ]);
-            }
-        }
-
-        return back()->withErrors(['msg' => 'Частинку оновленно']);
-    }
-
-    public function destroy($id) {
-        $story = Story::findOrFail($id);
-
-        $story->delete();
-        return back()->withErrors(['msg' => 'Блок видалена']);
-    }
-
-    public function story($gameId) {
-        $title = Game::findOrFail($gameId)->title;
-        $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
-
-        return view('game.story', compact('start', 'title'));
-    }
-
-    public function next(Request $request) {
-        $storyId = $request->input('story_id');
-
-        $nextStories = Story::whereHas('linkedFrom', function($query) use ($storyId) {
-            $query->where('story_from_id', $storyId);
-        })->get();
-    
-        if ($nextStories->isEmpty())
-            return response()->json(['message' => 'Кінець']);
-    
-        return response()->json(['next_stories' => $nextStories]);
-    }
-
-    public function test($gameId){
         $start = Story::whereDoesntHave('linkedFrom')
             ->where('game_id', $gameId)
             ->get();
@@ -121,7 +46,20 @@ class StoryController extends Controller {
         return view('game.storytest', compact('start', 'links', 'blocks', 'gameId'));
     }
 
-    function createajax(Request $request) {
+    public function next(Request $request) {
+        $storyId = $request->input('story_id');
+
+        $nextStories = Story::whereHas('linkedFrom', function($query) use ($storyId) {
+            $query->where('story_from_id', $storyId);
+        })->get();
+    
+        if ($nextStories->isEmpty())
+            return response()->json(['message' => 'Кінець']);
+    
+        return response()->json(['next_stories' => $nextStories]);
+    }
+
+    function create(Request $request) {
         try{
             $validated = $request->validate([
                 'title' => 'required|string|max:50',
@@ -150,7 +88,7 @@ class StoryController extends Controller {
         }
     }
 
-    function updateajax(Request $request){
+    function update(Request $request){
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:50',
@@ -209,7 +147,7 @@ class StoryController extends Controller {
         }
     }
 
-    function destroyajax($id) {
+    function destroy($id) {
         $story = Story::findOrFail($id);
         if ($story) {
             $story->delete();

@@ -20,13 +20,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/playlists">Плейлисти</a>
                         </li>
-                        <li class="nav-item">
-                            @if(!request()->has('play'))
-                                <a href="{{ url()->current() }}?play=true" class="btn btn-success">Грати</a>
-                            @else
-                                <a href="{{ request()->fullUrlWithoutQuery('play') }}" class="btn btn-warning">Досить</a>
-                            @endif
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ Auth::user()->name }}

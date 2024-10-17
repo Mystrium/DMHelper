@@ -36,6 +36,8 @@
             @endforeach
         </div>
 
+        <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/story/{{$game_id}}"><- Історія</a>
+
         @if(isset($maps[0]->id))
             <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
                 <div class="form-check">
