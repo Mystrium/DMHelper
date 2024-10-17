@@ -85,7 +85,7 @@
         @endif
 
         @if(isset($maps[0]->id))
-            <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75 w-75">
+            <div class="position-absolute bottom-0 start-50 translate-middle-x bg-transparent p-2 opacity-75 w-75">
                 <ul class="nav nav-tabs justify-content-center" id="mapTabs" role="tablist">
                     @foreach ($maps as $map)
                         <li class="nav-item" role="presentation">
@@ -450,7 +450,7 @@ function uploadMarker() {
         if (data.marker) {
             placeMarker(data.marker);
             document.getElementById("markers_" + map_id).innerHTML += 
-                `<li id="mark_${data.marker.id}"><a class="dropdown-item search">${data.marker.title}</a></li>`;
+                `<li id="mark_${data.marker.id}"><a class="dropdown-item search" onclick="highlightMarker(${data.marker.id})">${data.marker.title}</a></li>`;
             showAlert('Мітку додано');
         } else 
             showAlert('Поле задовге або пусте', 'warning');

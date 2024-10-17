@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('marker/{id}',    [MarkerController::class, 'destroy'])->name('marker.delete');
     Route::post(  'updatemarker',   [MarkerController::class, 'update'])->name('marker.update');
 
-    Route::get(     'story/{id}',   [StoryController::class, 'index']);
+    Route::get(     'story/{id}',   [StoryController::class, 'index'])->name('story');
     Route::post(    'addstory',     [StoryController::class, 'create']);
     Route::post(    'updatestory',  [StoryController::class, 'update']);
     Route::delete(  'delstory/{id}',[StoryController::class, 'destroy']);

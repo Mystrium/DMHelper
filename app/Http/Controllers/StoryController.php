@@ -43,7 +43,7 @@ class StoryController extends Controller {
             }
         }
 
-        return view('game.storytest', compact('start', 'links', 'blocks', 'gameId'));
+        return view('game.storyedit', compact('start', 'links', 'blocks', 'gameId'));
     }
 
     public function next(Request $request) {
@@ -155,5 +155,4 @@ class StoryController extends Controller {
         }
         return response()->json(['success' => false]);
     }
-
 }

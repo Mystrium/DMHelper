@@ -12,10 +12,10 @@
                 <h1 class="position-absolute top-50 start-50 translate-middle-x">in development...</h1>
             </div>
         </div>
-        <div class="tab-pane " id="story" role="tabpanel" aria-labelledby="story-tab">
+        <div class="tab-pane show active" id="story" role="tabpanel" aria-labelledby="story-tab">
             <div id="story_cont"></div>
         </div>
-        <div class="tab-pane show active" id="fight" role="tabpanel" aria-labelledby="story-tab">
+        <div class="tab-pane" id="fight" role="tabpanel" aria-labelledby="story-tab">
             <div id="fight_cont"></div>
         </div>
         <div class="tab-pane" id="music" role="tabpanel" aria-labelledby="music-tab">
