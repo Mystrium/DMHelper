@@ -39,11 +39,11 @@
         <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/story/{{$game_id}}"><- Історія</a>
 
         @if(isset($maps[0]->id))
-            <div class="position-absolute top-0 start-0 p-3 border rounded bg-light">
-                <div class="form-check">
+            <div class="position-absolute top-0 start-0 p-3 border rounded bg-light opacity-75">
+                <!-- <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="option1">
                     <label class="form-check-label" for="option1">Сюжет</label>
-                </div>
+                </div> -->
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" onclick="showMarkers(this)" checked>
                     <label class="form-check-label">Мітки</label>
@@ -192,7 +192,7 @@ setTimeout(function() {
 }, 3000);
 
 window.addEventListener("load", (event) => {
-    uninnit = true;
+    uninnit = false;
     initializeMaps();
 });
 
@@ -297,7 +297,7 @@ function placeMarker(mrk) {
                                 <div class="card-body">
                                     @if(!request()->has('play'))
                                         <input type="text" class="form-control" id="change_marker_title_${mrk.id}" prev_text="${mrk.title}" name="title" value="${mrk.title}" required>
-                                        <textarea style="width:200px" class="form-control my-2" id="change_marker_text_${mrk.id}" prev_text="${mrk.text}" name="text" required>${mrk.text}</textarea>
+                                        <textarea style="width:300px" class="form-control my-2" id="change_marker_text_${mrk.id}" prev_text="${mrk.text}" name="text" required>${mrk.text}</textarea>
                                         <div class="d-flex">
                                             <button class="btn btn-warning btn-sm me-1" data-id="${mrk.id}" onclick="changeMarker(this)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">

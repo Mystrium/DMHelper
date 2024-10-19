@@ -3,19 +3,21 @@
         <nav class="navbar navbar-expand-lg navbar-dark">
             <a class="navbar-brand" href="#">DM Helper</a>
             <div class="navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Учасники</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ігри</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Музика</a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Головна</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Спільнота</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Персонажі</a>
-                    </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="/game">Ігри</a>
+                            <a class="nav-link" href="/games">Мої ігри</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/playlists">Плейлисти</a>
@@ -35,7 +37,7 @@
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth">Вхід/Реєстрація</a>
+                            <a class="nav-link" href="/login">Вхід/Реєстрація</a>
                         </li>
                     @endauth
                 </ul>

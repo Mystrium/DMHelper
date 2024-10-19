@@ -30,7 +30,7 @@ class AuthController extends Controller {
 
             auth()->login($user);
 
-            return redirect('/game');
+            return redirect('/games');
         } else {
             return back()->withErrors(['msg' => 'Паролі різні']);
         }
@@ -40,7 +40,7 @@ class AuthController extends Controller {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect('/game');
+            return redirect('/games');
         }
 
         return back()->withErrors(['email' => 'Неправильні дані для входу']);

@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post(    'addmusic',     [MusicController::class, 'create'])->name('music.add');
     Route::delete(  'music/{id}',   [MusicController::class, 'destroy'])->name('music.destroy');
 
-    Route::get(     'game',         [GameController::class, 'index'])->name('game');
+    Route::get(     'games',        [GameController::class, 'index'])->name('game');
     Route::post(    'game/add',     [GameController::class, 'create'])->name('game.add');
     Route::put(     'game/{id}',    [GameController::class, 'update'])->name('game.update');
     Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');

@@ -378,12 +378,21 @@ function updateBlock() {
         if (data.success) {
             graph.nodes.find(node => node.id == id).title = title.value;
             graph.nodes.find(node => node.id == id).text = text.value;
+
             document.querySelector(`[data-id="${id}"]`).innerHTML = title.value;
 
             del.forEach(d => {
                 document.querySelector(`line[start-node="${id}"][end-node="${d}"]`).remove();
+                graph.links = graph.links.filter(ln => ln.b != d);
             })
-            add.forEach(a => { drawLine(id, a) });
+            add.forEach(a => {
+                graph.links.push({ a: id, b: a });
+                drawLine(id, a);
+            });
+
+            $(`#nextNodeSelect option[value="${id}"]`).remove();
+            $(`#nextNodeSelect`).trigger('change');
+            $(`#nextNodeSelect`).append(new Option(title.value, id, false, false)).trigger('change');
 
             showAlert('Частинку оновлено');
         } else {

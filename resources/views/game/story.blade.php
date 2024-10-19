@@ -8,11 +8,19 @@
             <h3 class="py-3 text-center">{{$title}}</h3>
             <div id="story-container" class="row justify-content-center text-center">
                 @foreach($start as $story)
-                    <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block newblock"> 
+                    <div data-story-id="{{ $story->id }}" class="col-md-8 mb-5 border rounded history-block newblock" onclick="handleBlockClick(this)"> 
                         <h5>{{ $story->title }}</h5>
                         <textarea class="form-control mb-3" rows="4">{{ $story->text }}</textarea>
                     </div>
                 @endforeach
+            </div>
+            <div class="position-fixed bottom-0 end-0 translate-middle-x" style="padding-bottom: 120px">
+                <button class="btn btn-warning" onclick="redoStory()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466"/>
+                    </svg>
+                </button>
             </div>
             <div style="height:300px"></div>
         </div>
@@ -21,31 +29,35 @@
 
 @section('scripts')
 <script>
-    function blockAnimations(){
-        document.querySelectorAll('.history-block').forEach(block => {
-            block.addEventListener('click', (event) => {
-                if (block.classList.contains('completed-block')) { return; }
+    let story_start = {{ $story->id }};
 
-                document.querySelectorAll('.history-block.active-block').forEach(activeBlock => {
-                    activeBlock.classList.remove('active-block');
-                    activeBlock.classList.remove('newblock');
-                    activeBlock.classList.add('completed-block');
-                });
-
-                const parentBlock = event.target.closest('.history-block');
-                parentBlock.classList.add('active-block');
-                parentBlock.classList.remove('inactive-block');
-
-                document.getElementById('mapContainer')
-                    .scrollTo({ top: parentBlock.offsetTop - window.innerHeight / 2 + 160, behavior: 'smooth' });
-            });
-        });
+    function addBlockClickListener(block) {
+        block.setAttribute('onclick', 'handleBlockClick(this)');
     }
 
-    blockAnimations();
+    function handleBlockClick(block) {
+        block.removeAttribute('onclick');
 
-    $(document).on('click', '.newblock', function() {
-        let storyId = $(this).data('story-id');
+        document.querySelectorAll('.history-block.active-block').forEach(activeBlock => {
+            activeBlock.classList.remove('active-block');
+            activeBlock.classList.remove('newblock');
+            activeBlock.classList.add('completed-block');
+        });
+
+        block.classList.add('active-block');
+        block.classList.remove('inactive-block');
+
+        document.getElementById('mapContainer').scrollTo({
+            top: block.offsetTop - window.innerHeight / 2 + 160,
+            behavior: 'smooth'
+        });
+
+        drawNewBlock(block)
+    }
+
+    let block_row = 0;
+    function drawNewBlock(block) {
+        let storyId = $(block).data('story-id');
 
         $.ajax({
             url: '{{ route('story.next') }}',
@@ -56,14 +68,15 @@
             },
             success: function(response) {
                 if (response.next_stories) {
+                    let newBlock = '';
                     if(response.next_stories.length > 1) {
-                        let newBlock = `<div class="col-md-8 mb-5 border rounded">
+                        newBlock = `<div class="col-md-8 mb-5 border rounded">
                                 <ul class="nav nav-tabs" id="storyTabs" role="tablist">`;
 
                         response.next_stories.forEach(function(story, index) {
                             newBlock += `<li class="nav-item" role="presentation"><button class="nav-link`;
                             if(index == 0) newBlock += ` active`;
-                            newBlock += `" id="variant${story.id}-tab" data-bs-toggle="tab" data-bs-target="#variant${story.id}" type="button" role="tab" aria-controls="variant${story.id}" aria-selected="true">${story.title}</button></li>`;
+                            newBlock += `" id="variant${story.id}_${block_row}-tab" data-bs-toggle="tab" data-bs-target="#variant${story.id}_${block_row}" type="button" role="tab" aria-controls="variant${story.id}" aria-selected="true">${story.title}</button></li>`;
                         });
 
                         newBlock += `</ul><div class="tab-content mt-3" id="storyTabsContent">`;
@@ -71,30 +84,63 @@
                         response.next_stories.forEach(function(story, index) {
                             newBlock += `<div data-story-id="${story.id}" class="history-block inactive-block tab-pane fade newblock`;
                             if(index == 0) newBlock += ` show active`;
-                            newBlock += `" id="variant${story.id}" role="tabpanel">
+                            newBlock += `" id="variant${story.id}_${block_row}" role="tabpanel">
                                     <h5>${story.title}</h5>
                                     <textarea class="form-control mb-3" rows="4">${story.text}</textarea>
                                 </div>`;
                         });
 
-                        $('#story-container').append(newBlock + `</div></div>`);
+                        newBlock += `</div></div>`;
                     } else {
-                        let newBlock = `
+                        newBlock = `
                             <div data-story-id="${response.next_stories[0].id}" class="col-md-8 mb-5 border rounded history-block newblock">
                                 <h5>${response.next_stories[0].title}</h5>
                                 <textarea class="form-control mb-3" rows="4">${response.next_stories[0].text}</textarea>
                             </div>`;
-                        $('#story-container').append(newBlock);
                     }
-                    blockAnimations();
-                } else {
-                    alert(response.message);
-                }
+                    $('#story-container').append(newBlock);
+                    block_row++;
+
+                    let newBlocks = document.querySelectorAll('.newblock')
+                    newBlocks.forEach(newBl => {
+                        addBlockClickListener(newBl);
+                    });
+                } else
+                    showAlert(response.message);
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
             }
         });
-    });
+    }
+
+    function redoStory() {
+        if(document.querySelectorAll('.history-block').length == 1) return;
+
+        let newBlock = document.querySelector('.newblock:not(.active-block)')
+        if(newBlock) newBlock.remove();
+
+        let currBlock = document.querySelector('.newblock.active-block');
+        if(currBlock) { 
+            currBlock.classList.remove('active-block');
+            addBlockClickListener(currBlock);
+        }
+
+        let lastCompletedBlock = document.querySelectorAll('.completed-block');
+        let lastAddedCompletedBlock = lastCompletedBlock[lastCompletedBlock.length - 1];
+
+        if(lastAddedCompletedBlock){
+            lastAddedCompletedBlock.classList.remove('completed-block');
+            lastAddedCompletedBlock.classList.add('active-block');
+            lastAddedCompletedBlock.classList.add('newblock');
+
+            document.getElementById('mapContainer').scrollTo({
+                top: lastAddedCompletedBlock.offsetTop - window.innerHeight / 2 + 160,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+
 </script>
 @endsection
