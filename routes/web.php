@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get(     'story/{id}',   [StoryController::class, 'index'])->name('story');
     Route::post(    'addstory',     [StoryController::class, 'create']);
     Route::post(    'updatestory',  [StoryController::class, 'update']);
+    Route::post(    'pausestory',   [StoryController::class, 'pause']);
     Route::delete(  'delstory/{id}',[StoryController::class, 'destroy']);
     Route::post(    'story/next',   [StoryController::class, 'next'])->name('story.next');
 

@@ -11,7 +11,8 @@ class StoryController extends Controller {
     public function index($gameId, Request $request){
         if($request->input('play') == true) {
             $title = Game::findOrFail($gameId)->title;
-            $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
+            // $start = Story::whereDoesntHave('linkedFrom')->where('game_id', $gameId)->get();
+            $start = Story::where([['game_id', $gameId], ['completed', 1]])->get();
 
             return view('game.story', compact('start', 'title'));
         }
@@ -38,7 +39,8 @@ class StoryController extends Controller {
                 $blocks[] = [
                     'id' => $block->id,
                     'title' => $block->title,
-                    'text' => $block->text
+                    'text' => $block->text,
+                    'completed' => $block->completed
                 ];
             }
         }
@@ -70,6 +72,7 @@ class StoryController extends Controller {
                 'game_id' => $request->input('game_id'),
                 'title' => $validated['title'],
                 'text' => $validated['text'],
+                'completed' => 0
             ]);
 
             if($request->input('id_from') != 0){
@@ -77,6 +80,9 @@ class StoryController extends Controller {
                     'story_from_id' => $request->input('id_from'),
                     'story_to_id' => $block->id
                 ]);
+            } else {
+                $block->completed = 1;
+                $block->update();
             }
 
             return response()->json(['block' => $block]);
@@ -154,5 +160,24 @@ class StoryController extends Controller {
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => false]);
+    }
+
+    function pause(Request $request){
+        try {
+            $story1 = Story::findOrFail($request->id_from);
+            $story1->completed = 0;
+            $story1->save();
+
+            $story2 = Story::findOrFail($request->id_to);
+            $story2->completed = 1;
+            $story2->save();
+
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 }
