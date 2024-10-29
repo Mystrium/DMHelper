@@ -14,9 +14,10 @@ class PlayController extends Controller {
 
     function fight() {
         $players = [
-            1 => ['name' => 'vergil', 'initiative' => 2, 'hp' => 10, 'armor' => 13],
-            2 => ['name' => 'miric', 'initiative' => 3, 'hp' => 5, 'armor' => 16],
-            4 =>['name' => 'blacke', 'initiative' => 1, 'hp' => 6, 'armor' => 10],
+            1 => ['name' => 'rain',     'initiative' => 3, 'hp' => 10, 'armor' => 14],
+            2 => ['name' => 'slimak',   'initiative' => 2, 'hp' => 7,  'armor' => 10],
+            4 => ['name' => 'buter',    'initiative' => 2, 'hp' => 9,  'armor' => 14],
+            5 => ['name' => 'astros',   'initiative' => 1, 'hp' => 7,  'armor' => 10],
         ];
 
         return view('game.fight', compact('players'));

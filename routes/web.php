@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicListController;
 use App\Http\Controllers\MarkerController;
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::view('/players', 'game.players');
 
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
+    Route::get(     'playlists/my', [MusicListController::class, 'mylist'])->name('playlists.my');
     Route::post(    'playlist/add', [MusicListController::class, 'create'])->name('playlist.add');
     Route::put(     'playlist/{id}',[MusicListController::class, 'update'])->name('playlist.update');
     Route::delete(  'playlist/{id}',[MusicListController::class, 'destroy'])->name('playlist.destroy');
@@ -31,13 +33,14 @@ Route::middleware('auth')->group(function () {
     Route::delete(  'music/{id}',   [MusicController::class, 'destroy'])->name('music.destroy');
 
     Route::get(     'games',        [GameController::class, 'index'])->name('game');
+    Route::get(     'games/my',     [GameController::class, 'mygames'])->name('game.my');
     Route::post(    'game/add',     [GameController::class, 'create'])->name('game.add');
     Route::put(     'game/{id}',    [GameController::class, 'update'])->name('game.update');
     Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');
 
     Route::get(     'map/{id}',     [MapController::class, 'index'])->name('map');
     Route::post(    'addmap/{id}',  [MapController::class, 'create'])->name('map.add');
-    Route::post(     'updatemap',   [MapController::class, 'update'])->name('map.update');
+    Route::post(    'updatemap',    [MapController::class, 'update'])->name('map.update');
     Route::delete(  'map/{id}',     [MapController::class, 'destroy'])->name('map.destroy');
 
     Route::post(   'addmarker',     [MarkerController::class, 'create'])->name('marker.add');
@@ -53,5 +56,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get(    'play/{game_id}',[PlayController::class, 'index'])->name('play');
     Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');
+
+    Route::get(    'users/',        [UserController::class, 'index'])->name('profile.all');
+    Route::get(    'profile/{id}',  [UserController::class, 'profile'])->name('profile');
+    Route::put(    'profile/{id}',  [UserController::class, 'update'])->name('profile.update');
 
 });

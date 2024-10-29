@@ -7,6 +7,11 @@ use App\Models\MusicList;
 
 class MusicListController extends Controller {
     function index() {
+        $playlists = MusicList::with('music')->with('user')->orderBy('id', 'desc')->get();
+        return view('social.playlists', compact('playlists'));
+    }
+
+    function mylist() {
         $playlists = MusicList::where('user_id', auth()->id())->with('music')->get();
         return view('playlists', compact('playlists'));
     }

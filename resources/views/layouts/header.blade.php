@@ -5,28 +5,31 @@
             <div class="navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Учасники</a>
+                        <a class="nav-link" href="/users">Учасники</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ігри</a>
+                        <a class="nav-link" href="/games">Ігри</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Музика</a>
+                        <a class="nav-link" href="/playlists">Музика</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="/games">Мої ігри</a>
+                            <a class="nav-link" href="/games/my">Мої ігри</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/playlists">Плейлисти</a>
+                            <a class="nav-link" href="/playlists/my">Плейлисти</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="/profile/{{ Auth::user()->id }}">Профіль</a>
+                                </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

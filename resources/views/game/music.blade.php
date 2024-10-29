@@ -3,6 +3,7 @@
 @section('title', 'Музика')
 
 @section('content')
+@php $can_edit = (Auth::user()->id == $musicList->user_id) && !request()->has('play'); @endphp
 <div class="container-fluid pt-3 text-center">
     <h5>{{$musicList->title}}</h5>
     <p>{{$musicList->description}}</p>
@@ -41,7 +42,7 @@
                             <div id="music_{{$music->id}}" class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">
                                 <iframe class="music-video" width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}?enablejsapi=1" allow="autoplay" frameborder="0" data-id="{{$music->id}}"></iframe>
                                 <button class="opacity-0 position-absolute top-0 start-0 mt-5" style="width: 350px; height: 100px;" onclick="playMusic({{$music->id}})"></button>
-                                @if(!request()->has('play'))
+                                @if($can_edit)
                                     <button class="position-absolute bottom-0 end-0 m-2 btn btn-danger btn-sm marker_delete" data-id="{{$music->id}}" onclick="deleteMusic(this)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
@@ -52,7 +53,7 @@
                         @endif
                     @endforeach
 
-                    @if(!request()->has('play'))
+                    @if($can_edit)
                         <a id="music_add_{{$categ->id}}" data-bs-toggle="modal" onclick="changeCateg({{$categ->id}})" data-bs-target="#addPlaylistModal">
                             <div class="game-card p-1" style="background-color: lightgreen; height: 200px">
                                 <div class="game-card-overlay">
@@ -74,7 +75,7 @@
     </div>
 </div>
 
-@if(!request()->has('play'))
+@if($can_edit)
     <div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -113,6 +114,7 @@
 
 @section('scripts')
 <script>
+    @if($can_edit)
     function changeCateg(id) { document.getElementById('music_category_id').value = id; }
 
     function uploadMusic() {
@@ -183,7 +185,8 @@
             .catch(error => console.error('Error:', error));
         }
     };
-
+    @endif
+    
     function controlVideo(vidFunc) {
         var iframe = document.getElementsByTagName("iframe");
         for (let i = 0; i < iframe.length; i++) {

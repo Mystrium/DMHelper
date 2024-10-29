@@ -14,7 +14,7 @@
                     </div>
                 @endforeach
             </div>
-            <div class="position-fixed bottom-0 end-0 translate-middle-x" style="padding-bottom: 120px">
+            <div class="position-fixed bottom-0 end-0 pe-3" style="padding-bottom: 75px">
                 <button class="btn btn-warning" onclick="redoStory()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
@@ -22,7 +22,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="position-fixed bottom-0 start-0 ps-4" style="padding-bottom: 120px">
+            <div class="position-fixed bottom-0 start-0 ps-3" style="padding-bottom: 75px">
                 <button class="btn btn-success" onclick="savePaused()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-floppy" viewBox="0 0 16 16">
                         <path d="M11 2H9v3h2z"/>
