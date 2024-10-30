@@ -15,8 +15,14 @@ class UserController extends Controller {
 
     function profile($id) {
         $user = User::findOrFail($id);
-        $games = Game::where('user_id', $user->id)->with('map')->get();
-        $playlists = MusicList::where('user_id', $user->id)->with('music')->get();
+        $games = Game::where('visible', 1)
+            ->where('user_id', $user->id)
+            ->with('map')
+            ->get();
+        $playlists = MusicList::where('visible', 1)
+            ->where('user_id', $user->id)
+            ->with('music')
+            ->get();
 
         return view('social.profile', compact('user', 'games', 'playlists'));
     }

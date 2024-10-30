@@ -7,12 +7,19 @@ use App\Models\MusicList;
 
 class MusicListController extends Controller {
     function index() {
-        $playlists = MusicList::with('music')->with('user')->orderBy('id', 'desc')->get();
+        $playlists = MusicList::where('visible', 1)
+            ->with('music')
+            ->with('user')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('social.playlists', compact('playlists'));
     }
 
     function mylist() {
-        $playlists = MusicList::where('user_id', auth()->id())->with('music')->get();
+        $playlists = MusicList::where('user_id', auth()->id())
+            ->with('music')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('playlists', compact('playlists'));
     }
 
@@ -22,11 +29,12 @@ class MusicListController extends Controller {
             'description' => 'max:100',
         ]);
 
-        $playlist = new MusicList();
-        $playlist->title = $validated['title'];
-        $playlist->description = $validated['description'];
-        $playlist->user_id = auth()->id();
-        $playlist->save();
+        $playlist = MusicList::create([
+            'user_id' => auth()->id(),
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'visible' => $request->has('visibility') ? 1 : 0
+        ]);
 
         return redirect()->route('music', $playlist->id);
     }
@@ -42,6 +50,7 @@ class MusicListController extends Controller {
 
         $playlist->title = $validated['title'];
         $playlist->description = $validated['description'];
+        $playlist->visible = $request->has('visibility') ? 1 : 0;
         $playlist->save();
 
         return back()->withErrors(['msg' => 'Плейлист оновленно']);

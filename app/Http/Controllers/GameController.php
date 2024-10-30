@@ -8,13 +8,20 @@ use App\Models\Game;
 
 class GameController extends Controller {
     function index() {
-        $games = Game::with('map')->with('user')->orderBy('id', 'desc')->get();
+        $games = Game::where('visible', 1)
+            ->with('map')
+            ->with('user')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('social.games', compact( 'games'));
     }
 
     function mygames() {
         $playlists = MusicList::where('user_id', auth()->id())->get();
-        $games = Game::where('user_id', auth()->id())->with('map')->get();
+        $games = Game::where('user_id', auth()->id())
+            ->with('map')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('games', compact('playlists', 'games'));
     }
 
@@ -29,7 +36,8 @@ class GameController extends Controller {
             'user_id' => auth()->id(),
             'title' => $request->input('title'),
             'setting' => $request->input('setting'),
-            'music_list_id' => $request->input('music_list_id')
+            'music_list_id' => $request->input('music_list_id'),
+            'visible' => $request->has('visibility') ? 1 : 0
         ]);
 
         return redirect()->route('story', $newgame->id);
@@ -48,6 +56,7 @@ class GameController extends Controller {
         $game->title = $validated['title'];
         $game->setting = $validated['setting'];
         $game->music_list_id = $validated['music_list_id'];
+        $game->visible = $request->has('visibility') ? 1 : 0;
         $game->save();
 
         return back()->withErrors(['msg' => 'Гру оновленно']);

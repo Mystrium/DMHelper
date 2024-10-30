@@ -30,7 +30,7 @@ class AuthController extends Controller {
 
             auth()->login($user);
 
-            return redirect('/games');
+            return redirect('/games/my');
         } else {
             return back()->withErrors(['msg' => 'Паролі різні']);
         }

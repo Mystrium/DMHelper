@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MusicList extends Model {
     protected $fillable = [
         'title', 
-        'description', 
+        'description',
+        'visible',
         'user_id'
     ];
 

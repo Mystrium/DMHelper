@@ -11,7 +11,8 @@ class Game extends Model {
     protected $fillable = [
         'user_id', 
         'title', 
-        'setting', 
+        'setting',
+        'visible',
         'music_list_id'
     ];
 
