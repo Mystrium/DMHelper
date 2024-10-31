@@ -11,16 +11,41 @@ class MusicListController extends Controller {
             ->with('music')
             ->with('user')
             ->orderBy('id', 'desc')
-            ->get();
-        return view('social.playlists', compact('playlists'));
+            ->paginate(6, ['*'], 'page', 1);
+
+        $my = false;
+        return view('playlists', compact('playlists', 'my'));
     }
 
     function mylist() {
         $playlists = MusicList::where('user_id', auth()->id())
             ->with('music')
             ->orderBy('id', 'desc')
-            ->get();
-        return view('playlists', compact('playlists'));
+            ->paginate(6, ['*'], 'page', 1);
+
+        $my = true;
+        return view('playlists', compact('playlists', 'my'));
+    }
+
+    function fetch(Request $request) {
+        $page = $request->input('page', 1);
+        $search = $request->input('query', '');
+
+        $playlists = MusicList::when($request->has('my'), function ($q) {
+                $q->where('user_id', auth()->id());
+            })->when(!$request->has('my'), function ($q) {
+                $q->where('visible', 1)
+                    ->with('user');
+            })->when($search != '', function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title',   'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            })->with('music')
+            ->orderBy('id', 'desc')
+            ->paginate(6, ['*'], 'page', $page);
+        
+        return response()->json($playlists);
     }
 
     function create(Request $request) {

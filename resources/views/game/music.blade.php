@@ -22,7 +22,7 @@
                         @endforeach
 
                         <div class="playlist-item mx-2">
-                            <img src="https://img.youtube.com/vi/{{$url??''}}/0.jpg" width="200" height="150">
+                            <img class="rounded" src="https://img.youtube.com/vi/{{$url??''}}/0.jpg" width="200" height="150">
                             <p>{{$categ->title}}</p>
                         </div>
 
@@ -40,7 +40,7 @@
                     @foreach($musics as $music)
                         @if($music->music_category_id == $categ->id)
                             <div id="music_{{$music->id}}" class="video-item mx-2 position-relative" style="width: 350px; height: 200px;">
-                                <iframe class="music-video" width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}?enablejsapi=1" allow="autoplay" frameborder="0" data-id="{{$music->id}}"></iframe>
+                                <iframe class="music-video rounded" width="350" height="200" src="https://www.youtube.com/embed/{{$music->youtube_url}}?enablejsapi=1" allow="autoplay" frameborder="0" data-id="{{$music->id}}"></iframe>
                                 <button class="opacity-0 position-absolute top-0 start-0 mt-5" style="width: 350px; height: 100px;" onclick="playMusic({{$music->id}})"></button>
                                 @if($can_edit)
                                     <button class="position-absolute bottom-0 end-0 m-2 btn btn-danger btn-sm marker_delete" data-id="{{$music->id}}" onclick="deleteMusic(this)">

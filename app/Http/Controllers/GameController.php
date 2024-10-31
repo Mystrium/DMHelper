@@ -12,17 +12,41 @@ class GameController extends Controller {
             ->with('map')
             ->with('user')
             ->orderBy('id', 'desc')
-            ->get();
-        return view('social.games', compact( 'games'));
+            ->paginate(6, ['*'], 'page', 1);
+        $my = false;
+        return view('games', compact( 'games', 'my'));
     }
 
-    function mygames() {
+    function mygames(Request $request) {
         $playlists = MusicList::where('user_id', auth()->id())->get();
+        
         $games = Game::where('user_id', auth()->id())
             ->with('map')
             ->orderBy('id', 'desc')
-            ->get();
-        return view('games', compact('playlists', 'games'));
+            ->paginate(6, ['*'], 'page', 1);
+        $my = true;
+        return view('games', compact('playlists', 'games', 'my'));
+    }
+
+    function fetch(Request $request) {
+        $page = $request->input('page', 1);
+        $search = $request->input('query', '');
+
+        $games = Game::when($request->has('my'), function ($q) {
+                $q->where('user_id', auth()->id());
+            })->when(!$request->has('my'), function ($q) {
+                $q->where('visible', 1)
+                    ->with('user');
+            })->when($search != '', function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title',   'like', '%' . $search . '%')
+                        ->orWhere('setting', 'like', '%' . $search . '%');
+                });
+            })->with('map')
+            ->orderBy('id', 'desc')
+            ->paginate(6, ['*'], 'page', $page);
+        
+        return response()->json($games);
     }
 
     function create(Request $request) {
