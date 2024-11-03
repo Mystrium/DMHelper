@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Гра')
+@section('title', __('headers.game'))
 
 @section('content')
     <div class="tab-content" id="myTabContent">
@@ -26,19 +26,19 @@
     <footer class="bg-dark text-white py-2 mt-auto footer fixed-bottom">
         <ul class="nav">
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">Мапа</a>
+                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">{{__('links.map')}}</a>
             </li>            
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#players" role="tab" aria-controls="players" aria-selected="false">Гравці</a>
+                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#players" role="tab" aria-controls="players" aria-selected="false">{{__('links.players')}}</a>
             </li>
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark active" data-bs-toggle="tab" href="#story" role="tab" aria-controls="story" aria-selected="false">Сюжет</a>
+                <a class="nav-link btn btn-success text-dark active" data-bs-toggle="tab" href="#story" role="tab" aria-controls="story" aria-selected="false">{{__('links.story')}}</a>
             </li>
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#fight" role="tab" aria-controls="fight" aria-selected="false">Бій</a>
+                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#fight" role="tab" aria-controls="fight" aria-selected="false">{{__('links.fight')}}</a>
             </li>
             <li class="nav-item px-2" role="presentation">
-                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#music" role="tab" aria-controls="music" aria-selected="false">Музика</a>
+                <a class="nav-link btn btn-success text-dark" data-bs-toggle="tab" href="#music" role="tab" aria-controls="music" aria-selected="false">{{__('links.music')}}</a>
             </li>
         </ul>
     </footer>

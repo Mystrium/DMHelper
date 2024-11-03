@@ -87,14 +87,14 @@ class GameController extends Controller {
         $game->visible = $request->has('visibility') ? 1 : 0;
         $game->save();
 
-        return back()->withErrors(['msg' => 'Гру оновленно']);
+        return back()->withErrors(['msg' => __('messages.update.game')]);
     }
 
     function visible($id){
         $game = Game::findOrFail($id);
         $game->visible = !$game->visible;
         $game->save();
-        return back()->withErrors(['msg' => 'Гру приховано']);
+        return back()->withErrors(['msg' => __('messages.visible.game')]);
     }
 
     function destroy($id) {
@@ -102,6 +102,6 @@ class GameController extends Controller {
         if ($game->user_id != auth()->id()) { abort(403); }
         
         $game->delete();
-        return back()->withErrors(['msg' => 'Гру видалено успішно']);
+        return back()->withErrors(['msg' => __('messages.deleted.game')]);
     }
 }

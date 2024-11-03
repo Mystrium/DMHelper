@@ -29,7 +29,7 @@ class MapController extends Controller {
         $map->file_name = $fileName;
         $map->save();
 
-        return back()->withErrors(['msg' => 'Мапу додано успішно']);
+        return back()->withErrors(['msg' => __('messages.added.map')]);
     }
 
     function update(Request $request) {
@@ -53,6 +53,6 @@ class MapController extends Controller {
     function destroy($id) {
         $map = Map::findOrFail($id);
         $map->delete();
-        return back()->withErrors(['msg' => 'Мапу видалено успішно']);
+        return back()->withErrors(['msg' => __('messages.deleted.map')]);
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Мапа')
+@section('title', __('headers.maps'))
 
 @section('content')
     <div class="position-relative">
@@ -36,7 +36,7 @@
             @endforeach
         </div>
 
-        <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/story/{{$game_id}}"><- Історія</a>
+        <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/story/{{$game_id}}"><- {{__('links.story')}}</a>
 
         @if(isset($maps[0]->id))
             <div class="position-absolute top-0 start-0 p-3 border rounded bg-light opacity-75">
@@ -61,9 +61,9 @@
                         </svg>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addMapModal">Нова мапа</a></li>
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addMapModal">{{__('labels.newmap')}}</a></li>
                         @if(isset($maps[0]->id))
-                            <li><a class="dropdown-item" onclick="getPosition()">Мітка</a></li>
+                            <li><a class="dropdown-item" onclick="getPosition()">{{__('labels.newmarker')}}</a></li>
                         @endif
                     </ul>
                 </div>
@@ -116,21 +116,21 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMapModalLabel">Нова мапа</h5>
+                <h5 class="modal-title" id="addMapModalLabel">{{__('labels.newmap')}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/addmap/{{$game_id}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Назва мапи</label>
+                        <label class="form-label">{{__('fields.title')}}</label>
                         <input type="text" class="form-control" name="title" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Картинка</label>
+                        <label class="form-label">{{__('fields.image')}}</label>
                         <input type="file" class="form-control" name="map_file" required>
                     </div>
-                    <button type="submit" data-bs-dismiss="modal"  class="btn btn-success">Додати</button>
+                    <button type="submit" data-bs-dismiss="modal"  class="btn btn-success">{{__('buttons.add')}}</button>
                 </form>
             </div>
         </div>
@@ -142,7 +142,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMapModalLabel">Нова мітка</h5>
+                <h5 class="modal-title" id="addMapModalLabel">{{__('labels.newmarker')}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -150,14 +150,14 @@
                 <input type="hidden" id="marker_x" name="x" value="0">
                 <input type="hidden" id="marker_y" name="y" value="0">
                 <div class="mb-3">
-                    <label class="form-label">Назва мітки</label>
+                    <label class="form-label">{{__('fields.title')}}</label>
                     <input type="text" class="form-control" id="marker_title" name="title" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Опис мітки</label>
+                    <label class="form-label">{{__('fields.descr')}}</label>
                     <textarea class="form-control" id="marker_text" name="text" required></textarea>
                 </div>
-                <button onclick="uploadMarker()" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
+                <button onclick="uploadMarker()" data-bs-dismiss="modal" class="btn btn-success">{{__('buttons.add')}}</button>
             </div>
         </div>
     </div>
@@ -376,14 +376,14 @@ function changeMap(mapId){
             showAlert('Назву змінено');
         } else {
             changeTitle.value = changeTitle.getAttribute('prev_text');
-            showAlert('Поле задовге або пусте', 'warning');
+            showAlert({{__('messages.warning.invalid')}}, 'warning');
         }
     }).catch(error => { console.error('Error:', error);});
 }
 
 function confirmDeletion(event) {
     event.preventDefault();
-    if (confirm('Ви точно хочете видалити цю мапу ?')){ 
+    if (confirm('{{__('messages.delete.map')}}  ?')){ 
         document.getElementById('delete_form').action = '/map/' + currentMap;
         event.target.submit();
     }
@@ -451,9 +451,9 @@ function uploadMarker() {
             placeMarker(data.marker);
             document.getElementById("markers_" + map_id).innerHTML += 
                 `<li id="mark_${data.marker.id}"><a class="dropdown-item search" onclick="highlightMarker(${data.marker.id})">${data.marker.title}</a></li>`;
-            showAlert('Мітку додано');
+            showAlert({{__('messages.added.marker')}});
         } else 
-            showAlert('Поле задовге або пусте', 'warning');
+            showAlert({{__('messages.warning.invalid')}}, 'warning');
     }).catch(error => { console.error('Error:', error);});
 
     document.getElementById('marker_title').value = '';
@@ -462,7 +462,7 @@ function uploadMarker() {
 
 function deleteMarker(btn) {
     const markerId = btn.getAttribute('data-id');
-    const confirmed = confirm("Ви хочете видалити цю мітку ?");
+    const confirmed = confirm("{{__('messages.delete.marker')}}  ?");
 
     if (confirmed) {
         fetch(`/marker/${markerId}`, {
@@ -477,7 +477,7 @@ function deleteMarker(btn) {
             if (data.success) {
                 document.getElementById("marker_" + markerId).remove();
                 document.getElementById("mark_" + markerId).remove();
-                showAlert('Мітку видаленно');
+                showAlert({{__('messages.deleted.marker')}});
             } else showAlert(data.message, 'warning');
         })
         .catch(error => console.error('Error:', error));
@@ -510,11 +510,11 @@ function changeMarker(btn) {
             changeTitle.setAttribute('prev_text', changeTitle.value);
             changeText.setAttribute('prev_text', changeText.value);
             document.querySelector("#mark_" + markerId + " a").innerHTML = changeTitle.value;
-            showAlert('Маткер оновленно');
+            showAlert({{__('messages.updated.marker')}});
         } else {
             changeTitle.value = changeTitle.getAttribute('prev_text');
             changeText.innerText = changeText.getAttribute('prev_text');
-            showAlert('Поле задовге або пусте', 'warning');
+            showAlert({{__('messages.warning.invalid')}}, 'warning');
         }
     }).catch(error => { console.error('Error:', error); });
 }

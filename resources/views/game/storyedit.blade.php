@@ -6,8 +6,8 @@
 <div class="container-fluid">
     <div id="graph-container" style="position: relative; height: 2000px; width: 100%;"></div>
 
-    <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/map/{{$gameId}}"><- Мапа</a>
-    <a class="btn btn-success position-fixed bottom-0 end-0 m-2" href="/story/{{$gameId}}?play=true">Перегляд</a>
+    <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/map/{{$gameId}}"><- {{__('links.map')}}</a>
+    <a class="btn btn-success position-fixed bottom-0 end-0 m-2" href="/story/{{$gameId}}?play=true">{{__('links.preview')}}</a>
 
     <div class="form-container position-fixed bottom-0 start-50 translate-middle-x text-center mb-1 w-50">
         <div class="form-group">
@@ -74,19 +74,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addStoryLab">Нова частинка</h5>
+                <h5 class="modal-title" id="addStoryLab">{{__('labels.newblock')}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Назва блоку</label>
+                        <label class="form-label">{{__('fields.title')}}</label>
                         <input type="text" class="form-control" id="new_title" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Текст</label>
+                        <label class="form-label">{{__('fields.descr')}}</label>
                         <textarea type="text" class="form-control" id="new_text" required></textarea>
                     </div>
-                <button onclick="addafterBlock()" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
+                <button onclick="addafterBlock()" data-bs-dismiss="modal" class="btn btn-success">{{__('buttons.add')}}</button>
             </div>
         </div>
     </div>
@@ -343,9 +343,9 @@ function addafterBlock() {
                 drawNode(newBlock, window.innerWidth / 2, 50);
             }
 
-            showAlert('Частинку додано');
+            showAlert({{__('messages.added.story')}});
         } else
-            showAlert('Поле задовге або пусте', 'warning');
+            showAlert({{__('messages.warning.invalid')}}, 'warning');
     }).catch(error => { console.error('Error:', error);});
 
     title.value = '';
@@ -400,9 +400,9 @@ function updateBlock() {
             $(`#nextNodeSelect`).trigger('change');
             $(`#nextNodeSelect`).append(new Option(title.value, id, false, false)).trigger('change');
 
-            showAlert('Частинку оновлено');
+            showAlert({{__('messages.updated.story')}});
         } else {
-            showAlert('Поле задовге або пусте', 'warning');
+            showAlert({{__('messages.warning.invalid')}}, 'warning');
             title.value = graph.nodes.find(node => node.id == id).title;
             text.value  = graph.nodes.find(node => node.id == id).text;
         }
@@ -410,7 +410,7 @@ function updateBlock() {
 }
 
 function deleteBlock() {
-    if (!confirm("Ви впевнені, що хочете видалити цей блок?")) return;
+    if (!confirm("{{__('messages.delete.story')}} ?")) return;
     let id = selectedBlock.id;
 
     fetch(`/delstory/${id}`, {
@@ -437,7 +437,7 @@ function deleteBlock() {
             document.getElementById('block_title').value = '';
             document.getElementById('block_text').value = '';
 
-            showAlert('Блок видаленно');
+            showAlert({{__('messages.deleted.story')}});
         } else 
             showAlert(data.message, 'warning');
     }).catch(error => console.error('Error:', error));

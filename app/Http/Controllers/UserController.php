@@ -47,7 +47,7 @@ class UserController extends Controller {
 
         $user->save();
 
-        return back()->withErrors(['msg' => 'Профіль оновленно']);
+        return back()->withErrors(['msg' => __('messages.updated.profile')]);
     }
 
     function ban(Request $request) {
@@ -57,7 +57,7 @@ class UserController extends Controller {
         $user->banned = !$user->banned;
         $user->save();
 
-        $msg = $user->banned == 1 ? 'Користувача заблоковано' : 'Користувача розблоковано';
+        $msg = $user->banned == 1 ? __('messages.user.ban') : __('messages.user.unban');
         return back()->withErrors(['msg' => $msg]);
     }
 }

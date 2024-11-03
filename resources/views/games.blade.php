@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Сесії')
+@section('title', __('headers.games'))
 
 @section('content')
 <div class="container my-5">
@@ -102,7 +102,7 @@
     </div>
     @if(count($games) > 5)
         <div style="height:200px">
-            <h3 class="text-center" id="load_more_text">Прогорніть, щоб показати ще</h3>
+            <h3 class="text-center" id="load_more_text">{{__('labels.scrollmore')}}</h3>
         </div>
     @endif
 </div>
@@ -112,40 +112,40 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createGameLabel">Створити нову гру</h5>
+                    <h5 class="modal-title" id="createGameLabel">{{__('labels.addgame')}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="POST" action="{{ route('game.add') }}">
                         @csrf
                         <div class="mb-3">
-                            <label for="gameTitle" class="form-label">Назва</label>
+                            <label for="gameTitle" class="form-label">{{__('fields.title')}}</label>
                             <input type="text" class="form-control" id="gameTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="gameSetting" class="form-label">Опис</label>
+                            <label for="gameSetting" class="form-label">{{__('fields.descr')}}</label>
                             <textarea class="form-control" id="gameSetting" name="setting"></textarea>
                         </div>
                         <div class="mb-3 form-check form-switch">
-                            <label class="form-check-label" for="gameVisibility">Публічна</label>
+                            <label class="form-check-label" for="gameVisibility">{{__('fields.visible')}}</label>
                             <input class="form-check-input" type="checkbox" id="gameVisibility" name="visibility" checked>
                         </div>
                         <div class="mb-3">
-                            <label for="musicList" class="form-label">Плейлист</label>
+                            <label for="musicList" class="form-label">{{__('fields.playlist')}}</label>
                             <select class="form-select" id="musicList" name="music_list_id">
-                                <optgroup label="Ваші плейлисти">
+                                <optgroup label="{{__('labels.mylists')}}">
                                     @foreach($playlists['my'] as $musicList)
                                         <option value="{{ $musicList->id }}">{{ $musicList->title }} ({{ $musicList->description }})</option>
                                     @endforeach
                                 </optgroup>
-                                <optgroup label="Публічні плейлисти">
+                                <optgroup label="{{__('labels.alllists')}}">
                                     @foreach($playlists['all'] as $musicList)
                                         <option value="{{ $musicList->id }}">{{ $musicList->title }} ({{ $musicList->description }})</option>
                                     @endforeach
                                 </optgroup>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success">Створити гру</button>
+                        <button type="submit" class="btn btn-success">{{__('labels.addgame')}}</button>
                     </form>
                 </div>
             </div>
@@ -165,33 +165,33 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label for="gameTitle" class="form-label">Назва</label>
+                            <label for="gameTitle" class="form-label">{{__('fields.title')}}</label>
                             <input type="text" class="form-control" id="chGameTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="gameSetting" class="form-label">Опис</label>
+                            <label for="gameSetting" class="form-label">{{__('fields.descr')}}</label>
                             <textarea class="form-control" id="chGameSetting" name="setting"></textarea>
                         </div>
                         <div class="mb-3 form-check form-switch">
-                            <label class="form-check-label" for="chGameVisibility">Публічна</label>
+                            <label class="form-check-label" for="chGameVisibility">{{__('fields.visible')}}</label>
                             <input class="form-check-input" type="checkbox" id="chGameVisibility" name="visibility" checked>
                         </div>
                         <div class="mb-3">
-                            <label for="musicList" class="form-label">Плейлист</label>
+                            <label for="musicList" class="form-label">{{__('fields.playlist')}}</label>
                             <select class="form-select" id="chMusicList" name="music_list_id">
-                                <optgroup label="Ваші плейлисти">
+                                <optgroup label="{{__('labels.mylists')}}">
                                     @foreach($playlists['my'] as $musicList)
                                         <option value="{{ $musicList->id }}">{{ $musicList->title }} ({{ $musicList->description }})</option>
                                     @endforeach
                                 </optgroup>
-                                <optgroup label="Публічні плейлисти">
+                                <optgroup label="{{__('labels.alllists')}}">
                                     @foreach($playlists['all'] as $musicList)
                                         <option value="{{ $musicList->id }}">{{ $musicList->title }} ({{ $musicList->description }})</option>
                                     @endforeach
                                 </optgroup>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-warning">Змінити гру</button>
+                        <button type="submit" class="btn btn-warning">{{__('buttons.change')}}</button>
                     </form>
                 </div>
             </div>
@@ -205,7 +205,7 @@
         @if($my)
             function confirmDeletion(event, title) {
                 event.preventDefault();
-                if (confirm('Ви точно хочете видалити гру "' + title + '" ?')) {
+                if (confirm('{{__('messages.delete.game')}} "' + title + '" ?')) {
                     event.target.submit();
                 }
             }
@@ -213,7 +213,7 @@
             function changeGame(event, game) {
                 event.preventDefault();
                 document.getElementById('editform').action = '/game/' + game.id;
-                document.getElementById('changeGameModalLabel').innerHTML = 'Змінити гру "' + game.title + '"';
+                document.getElementById('changeGameModalLabel').innerHTML = '{{__('labels.changegame')}} "' + game.title + '"';
                 document.getElementById('chGameTitle').value = game.title;
                 document.getElementById('chGameSetting').value = game.setting;
                 document.getElementById('chMusicList').value = game.music_list_id;

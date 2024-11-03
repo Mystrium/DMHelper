@@ -1,13 +1,13 @@
 @extends('layouts.layout')
 
-@section('title', 'Профіль')
+@section('title', __('links.profile'))
 
 @section('content')
 @php $is_owner = Auth::user()->id == $user->id; @endphp
 <div class="container my-5">
     <div class="user-info mb-5 text-center">
-        <h2>Профіль: {{ $user->name }}</h2>
-        <p>Email: {{ $user->email }}</p>
+        <h2>{{__('links.profile')}}: {{ $user->name }}</h2>
+        <p>{{__('fields.auth.titles.email')}}: {{ $user->email }}</p>
         @if($is_owner)
             <button data-bs-toggle="modal" data-bs-target="#changeUser" type="submit" class="btn btn-warning btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
@@ -17,12 +17,12 @@
         @endif
     </div>
 
-    @if(Auth::user()->is_admin)
+    @if(Auth::user()->is_admin && !$is_owner)
         <form method="POST" action="/users/ban" class="text-center pb-3">
             @csrf
             <input hidden name="id" value="{{$user->id}}">
             <button type="submit" class="btn {{!$user->banned ? 'btn-danger' : 'btn-warning'}} btn-sm me-2">
-                {{!$user->banned ? 'Заблокувати' : 'Розблокувати'}}
+                {{!$user->banned ? __('buttons.ban') : __('buttons.unban')}}
             </button>
         </form>
     @endif
@@ -30,10 +30,10 @@
     @if(!$user->banned)
         <ul class="nav nav-tabs justify-content-center" id="profileTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button" role="tab" aria-controls="games" aria-selected="true">Ігри</button>
+                <button class="nav-link active" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button" role="tab" aria-controls="games" aria-selected="true">{{__('links.games')}}</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="playlists-tab" data-bs-toggle="tab" data-bs-target="#playlists" type="button" role="tab" aria-controls="playlists" aria-selected="false">Плейлисти</button>
+                <button class="nav-link" id="playlists-tab" data-bs-toggle="tab" data-bs-target="#playlists" type="button" role="tab" aria-controls="playlists" aria-selected="false">{{__('links.myplaylists')}}</button>
             </li>
         </ul>
 
@@ -103,7 +103,7 @@
             </div>
         </div>
     @else
-        <h3 class="text-center text-secondary">На жаль цього користувача було заблоковано</h3>
+        <h3 class="text-center text-secondary">{{__('labels.userbaned')}}</h3>
     @endif
 </div>
 
@@ -112,7 +112,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="changeUserLabel">Змінити дані</h5>
+                    <h5 class="modal-title" id="changeUserLabel">{{__('labels.changeuser')}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -121,14 +121,14 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label for="gameTitle" class="form-label">Ім'я</label>
+                            <label for="gameTitle" class="form-label">{{__('fields.auth.titles.name')}}</label>
                             <input type="text" class="form-control" name="name" value="{{ $user->name }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="gameSetting" class="form-label">Пошта (логін)</label>
+                            <label for="gameSetting" class="form-label">{{__('fields.auth.titles.email')}}</label>
                             <textarea class="form-control" name="email">{{ $user->email }}</textarea>
                         </div>
-                        <button type="submit" class="btn btn-warning">Змінити</button>
+                        <button type="submit" class="btn btn-warning">{{__('buttons.change')}}</button>
                     </form>
                 </div>
             </div>

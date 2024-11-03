@@ -1,10 +1,10 @@
 @extends('layouts.layout')
 
-@section('title', 'Учасники')
+@section('title', __('links.users'))
 
 @section('content')
 <div class="container my-3">
-    <h2>Учасники</h2>
+    <h2>{{__('links.users')}}</h2>
     @foreach ($users as $user)
         <div class="list-group pt-2">
             <a href="/profile/{{ $user->id }}" class="list-group-item" aria-current="true">

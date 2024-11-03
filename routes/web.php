@@ -1,15 +1,22 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicListController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\MusicController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlayController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MapController;
+
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'uk'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::get('/', function () { return view('welcome'); });
 

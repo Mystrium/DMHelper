@@ -78,14 +78,14 @@ class MusicListController extends Controller {
         $playlist->visible = $request->has('visibility') ? 1 : 0;
         $playlist->save();
 
-        return back()->withErrors(['msg' => 'Плейлист оновленно']);
+        return back()->withErrors(['msg' => __('messages.updates.list')]);
     }
 
     function visible($id){
         $game = MusicList::findOrFail($id);
         $game->visible = !$game->visible;
         $game->save();
-        return back()->withErrors(['msg' => 'Плейлист приховано']);
+        return back()->withErrors(['msg' => __('messages.visible.game')]);
     }
 
     function destroy($id) {
@@ -93,6 +93,6 @@ class MusicListController extends Controller {
         if ($playlist->user_id != auth()->id()) { abort(403); }
         
         $playlist->delete();
-        return back()->withErrors(['msg' => 'Плейлист видалено успішно']);
+        return back()->withErrors(['msg' => __('messages.deleted.list')]);
     }
 }

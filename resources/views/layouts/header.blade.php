@@ -5,22 +5,22 @@
             <div class="navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/users">Учасники</a>
+                        <a class="nav-link" href="/users">{{__('links.users')}}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/games">Ігри</a>
+                        <a class="nav-link" href="/games">{{__('links.games')}}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/playlists">Музика</a>
+                        <a class="nav-link" href="/playlists">{{__('links.playlists')}}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="/games/my">Мої ігри</a>
+                            <a class="nav-link" href="/games/my">{{__('links.mygames')}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/playlists/my">Плейлисти</a>
+                            <a class="nav-link" href="/playlists/my">{{__('links.myplaylists')}}</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,22 +28,24 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="userDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="/profile/{{ Auth::user()->id }}">Профіль</a>
+                                    <a class="dropdown-item" href="/profile/{{ Auth::user()->id }}">{{__('links.profile')}}</a>
                                 </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button class="dropdown-item" type="submit">Вийти</button>
+                                        <button class="dropdown-item" type="submit">{{__('links.logout')}}</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">Вхід/Реєстрація</a>
+                            <a class="nav-link" href="/login">{{__('links.login')}} / {{__('links.signin')}}</a>
                         </li>
                     @endauth
                 </ul>
+                <a href="{{ route('lang.switch', 'en') }}" class="nav-link">Eng</a>|
+                <a href="{{ route('lang.switch', 'uk') }}" class="nav-link">Укр</a>
             </div>
         </nav>
     </div>

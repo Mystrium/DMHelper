@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Плейлисти')
+@section('title', __('headers.lists'))
 
 @section('content')
 <div class="container my-5">
@@ -89,7 +89,7 @@
     </div>
     @if(count($playlists) > 5)
         <div style="height:200px">
-            <h3 class="text-center" id="load_more_text">Прогорніть, щоб показати ще</h3>
+            <h3 class="text-center" id="load_more_text">{{__('labels.scrollmore')}}</h3>
         </div>
     @endif
 </div>
@@ -99,25 +99,25 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPlaylistModalLabel">Новий плейлист</h5>
+                    <h5 class="modal-title" id="addPlaylistModalLabel">{{__('labels.addlist')}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addPlaylistForm" method="POST" action="{{ route('playlist.add') }}">
                         @csrf
                         <div class="mb-3">
-                            <label for="playlistTitle" class="form-label">Назва</label>
+                            <label for="playlistTitle" class="form-label">{{__('fields.title')}}</label>
                             <input type="text" class="form-control" id="playlistTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="playlistDescription" class="form-label">Опис</label>
+                            <label for="playlistDescription" class="form-label">{{__('fields.descr')}}</label>
                             <textarea class="form-control" id="playlistDescription" name="description" rows="3"></textarea>
                         </div>
                         <div class="mb-3 form-check form-switch">
-                            <label class="form-check-label" for="gameVisibility">Видимість</label>
+                            <label class="form-check-label" for="gameVisibility">{{__('fields.visible')}}</label>
                             <input class="form-check-input" type="checkbox" id="gameVisibility" name="visibility" checked>
                         </div>
-                        <button type="submit" class="btn btn-success">Додати</button>
+                        <button type="submit" class="btn btn-success">{{__('buttons.addgame')}}</button>
                     </form>
                 </div>
             </div>
@@ -137,18 +137,18 @@
                             @method('PUT')
 
                         <div class="mb-3">
-                            <label for="playlistTitle" class="form-label">Назва</label>
+                            <label for="playlistTitle" class="form-label">{{__('fields.title')}}</label>
                             <input type="text" class="form-control" id="chPlaylistTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="playlistDescription" class="form-label">Опис</label>
+                            <label for="playlistDescription" class="form-label">{{__('fields.descr')}}</label>
                             <textarea class="form-control" id="chPlaylistDescription" name="description" rows="3"></textarea>
                         </div>
                         <div class="mb-3 form-check form-switch">
-                            <label class="form-check-label" for="chGameVisibility">Видимість</label>
+                            <label class="form-check-label" for="chGameVisibility">{{__('fields.visible')}}</label>
                             <input class="form-check-input" type="checkbox" id="chGameVisibility" name="visibility" checked>
                         </div>
-                        <button type="submit" class="btn btn-warning">Змінити</button>
+                        <button type="submit" class="btn btn-warning">{{__('buttons.change')}}</button>
                     </form>
                 </div>
             </div>
@@ -162,7 +162,7 @@
         @if($my)
             function confirmDeletion(event, title) {
                 event.preventDefault();
-                if (confirm('Ви точно хочете видалити плейлист "' + title + '" ?')) {
+                if (confirm('{{__('messages.delete.list')}}  "' + title + '" ?')) {
                     event.target.submit();
                 }
             }
@@ -170,7 +170,7 @@
             function changeList(event, playlist) {
                 event.preventDefault();
                 document.getElementById('editform').action = '/playlist/' + playlist.id;
-                document.getElementById('changePlaylistModalLabel').innerHTML = 'Змінити плейлист "' + playlist.title + '"';
+                document.getElementById('changePlaylistModalLabel').innerHTML = '{{__('labels.changelist')}} "' + playlist.title + '"';
                 document.getElementById('chPlaylistTitle').value = playlist.title;
                 document.getElementById('chPlaylistDescription').value = playlist.description;
                 document.getElementById('chGameVisibility').checked = playlist.visible == 1;

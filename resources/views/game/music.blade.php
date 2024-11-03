@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Музика')
+@section('title', __('headers.musics'))
 
 @section('content')
 @php $can_edit = (Auth::user()->id == $musicList->user_id) && !request()->has('play'); @endphp
@@ -57,7 +57,7 @@
                         <a id="music_add_{{$categ->id}}" data-bs-toggle="modal" onclick="changeCateg({{$categ->id}})" data-bs-target="#addPlaylistModal">
                             <div class="game-card p-1" style="background-color: lightgreen; height: 200px">
                                 <div class="game-card-overlay">
-                                    <div><h3>Додати пісню</h3></div>
+                                    <div><h3>{{__('buttons.addmusic')}}</h3></div>
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -80,7 +80,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPlaylistModalLabel">Нова пісня</h5>
+                    <h5 class="modal-title" id="addPlaylistModalLabel">{{__('labels.addmusic')}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -88,7 +88,7 @@
                         @csrf
                         <input type="hidden" id="music_list_id" value="{{$musicList->id}}">
                         <div class="mb-3">
-                            <label class="form-label">Категорія</label>
+                            <label class="form-label">{{__('fields.category')}}</label>
                             <select class="form-select" id="music_category_id">
                                 @foreach($categories as $categ)
                                     <option value="{{$categ->id}}">{{$categ->title}}</option>
@@ -96,10 +96,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Посилання на YouTube</label>
+                            <label class="form-label">{{__('fields.url')}}</label>
                             <input type="text" class="form-control" id="youtube_url" required>
                         </div>
-                        <button onclick="uploadMusic()" data-bs-dismiss="modal" class="btn btn-success">Додати</button>
+                        <button onclick="uploadMusic()" data-bs-dismiss="modal" class="btn btn-success">{{__('buttons.add')}}</button>
                     </form>
                 </div>
             </div>
@@ -108,7 +108,7 @@
 @endif
 
 <div class="text-center p-3">
-    <button class="btn btn-success" onclick="controlVideo('pauseVideo');">Зробити тишу</button>
+    <button class="btn btn-success" onclick="controlVideo('pauseVideo');">{{__('buttons.silence')}}</button>
 </div>
 @endsection
 
@@ -165,7 +165,7 @@
 
     function deleteMusic(btn) {
         const musicId = btn.getAttribute('data-id');
-        const confirmed = confirm("Ви хочете видалити цю пісню ?");
+        const confirmed = confirm("{{__('messages.delete.music')}} ?");
 
         if (confirmed) {
             fetch(`/music/${musicId}`, {
@@ -179,7 +179,7 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById("music_" + musicId).remove();
-                    showAlert('Пісню видаленно');
+                    showAlert({{__('messages.deleted.music')}});
                 } else showAlert(data.message, 'warning');
             })
             .catch(error => console.error('Error:', error));
