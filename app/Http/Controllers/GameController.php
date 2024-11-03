@@ -18,7 +18,11 @@ class GameController extends Controller {
     }
 
     function mygames(Request $request) {
-        $playlists = MusicList::where('user_id', auth()->id())->get();
+        $playlists = [];
+        $playlists['my']  = MusicList::where('user_id', auth()->id())->get();
+        $playlists['all'] = MusicList::where('user_id', '<>', auth()->id())
+            ->where('visible', 1)
+            ->get();
         
         $games = Game::where('user_id', auth()->id())
             ->with('map')
@@ -84,6 +88,13 @@ class GameController extends Controller {
         $game->save();
 
         return back()->withErrors(['msg' => 'Гру оновленно']);
+    }
+
+    function visible($id){
+        $game = Game::findOrFail($id);
+        $game->visible = !$game->visible;
+        $game->save();
+        return back()->withErrors(['msg' => 'Гру приховано']);
     }
 
     function destroy($id) {

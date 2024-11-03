@@ -9,7 +9,9 @@ use App\Models\User;
 
 class UserController extends Controller {
     function index() {
-        $users = User::orderBy('id', 'desc')->get();
+        $users = User::orderBy('banned', 'asc')
+            ->orderBy('id', 'desc')
+            ->get();
         return view('social.users', compact('users'));
     }
 
@@ -48,11 +50,14 @@ class UserController extends Controller {
         return back()->withErrors(['msg' => 'Профіль оновленно']);
     }
 
-    // function destroy($id) {
-    //     $game = Game::findOrFail($id);
-    //     if ($game->user_id != auth()->id()) { abort(403); }
+    function ban(Request $request) {
+        $user = User::findOrFail($request->id);
+        if (!auth()->user()->is_admin) { abort(403); }
         
-    //     $game->delete();
-    //     return back()->withErrors(['msg' => 'Гру видалено успішно']);
-    // }
+        $user->banned = !$user->banned;
+        $user->save();
+
+        $msg = $user->banned == 1 ? 'Користувача заблоковано' : 'Користувача розблоковано';
+        return back()->withErrors(['msg' => $msg]);
+    }
 }

@@ -24,8 +24,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
     Route::get(     'playlists/my', [MusicListController::class, 'mylist'])->name('playlists.my');
-    Route::get(   'playlists/fetch', [MusicListController::class, 'fetch'])->name('playlists.ajax');
+    Route::get(  'playlists/fetch', [MusicListController::class, 'fetch'])->name('playlists.ajax');
     Route::post(    'playlist/add', [MusicListController::class, 'create'])->name('playlist.add');
+    Route::put('playlist/visible/{id}', [MusicListController::class, 'visible'])->name('playlist.visible');
     Route::put(     'playlist/{id}',[MusicListController::class, 'update'])->name('playlist.update');
     Route::delete(  'playlist/{id}',[MusicListController::class, 'destroy'])->name('playlist.destroy');
 
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get(     'games/my',     [GameController::class, 'mygames'])->name('game.my');
     Route::get(     'games/fetch',  [GameController::class, 'fetch'])->name('game.ajax');
     Route::post(    'game/add',     [GameController::class, 'create'])->name('game.add');
+    Route::put('game/visible/{id}', [GameController::class, 'visible'])->name('game.visible');
     Route::put(     'game/{id}',    [GameController::class, 'update'])->name('game.update');
     Route::delete(  'game/{id}',    [GameController::class, 'destroy'])->name('game.destroy');
 
@@ -60,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');
 
     Route::get(    'users/',        [UserController::class, 'index'])->name('profile.all');
+    Route::post(   'users/ban',     [UserController::class, 'ban']);
     Route::get(    'profile/{id}',  [UserController::class, 'profile'])->name('profile');
     Route::put(    'profile/{id}',  [UserController::class, 'update'])->name('profile.update');
-
 });

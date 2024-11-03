@@ -548,3 +548,6 @@ function highlightMarker(id) {
 
 </script>
 @endsection
+<!-- 
+    delete image from folder, when delete map
+-->

@@ -40,6 +40,10 @@ class AuthController extends Controller {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            if(auth()->user()->banned == 1) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Ви заблоковані']);
+            }
             return redirect('/games');
         }
 

@@ -10,6 +10,8 @@ class User extends Authenticatable {
         'email',
         'name',
         'password',
+        'is_admin',
+        'banned'
     ];
 
     protected $hidden = [ 'password' ];

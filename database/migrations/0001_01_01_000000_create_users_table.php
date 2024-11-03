@@ -10,6 +10,8 @@ return new class extends Migration {
             $table->string('email', 50)->unique();
             $table->string('name', 30);
             $table->string('password', 150);
+            $table->boolean('is_admin')->default(0);
+            $table->boolean('banned')->default(0);
         });
     }
 

@@ -15,7 +15,7 @@ class StoryController extends Controller {
             $start = Story::where([['game_id', $gameId], ['completed', 1]])->get();
 
             return view('game.story', compact('start', 'title'));
-        } else if(Game::findOrFail($gameId)->user_id != auth()->id()) abort(403);
+        } else if(Game::findOrFail($gameId)->user_id != auth()->id() && !auth()->user()->is_admin) abort(403);
 
         $start = Story::whereDoesntHave('linkedFrom')
             ->where('game_id', $gameId)

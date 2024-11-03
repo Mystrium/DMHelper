@@ -9,7 +9,7 @@
         <div class="list-group pt-2">
             <a href="/profile/{{ $user->id }}" class="list-group-item" aria-current="true">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ $user->name }}</h5>
+                    <h5 class="mb-1 {{$user->is_admin?'text-danger':($user->banned?'text-secondary':'text-success')}}">{{$user->name}}</h5>
                     <small>{{ $user->id }}</small>
                 </div>
                 <p class="mb-1">{{ $user->email }}</p>
@@ -18,8 +18,3 @@
     @endforeach
 </div>
 @endsection
-@section('scripts')
-<script>
-
-
-</script>

@@ -81,6 +81,13 @@ class MusicListController extends Controller {
         return back()->withErrors(['msg' => 'Плейлист оновленно']);
     }
 
+    function visible($id){
+        $game = MusicList::findOrFail($id);
+        $game->visible = !$game->visible;
+        $game->save();
+        return back()->withErrors(['msg' => 'Плейлист приховано']);
+    }
+
     function destroy($id) {
         $playlist = MusicList::findOrFail($id);
         if ($playlist->user_id != auth()->id()) { abort(403); }
