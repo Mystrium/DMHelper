@@ -376,7 +376,7 @@ function changeMap(mapId){
             showAlert('Назву змінено');
         } else {
             changeTitle.value = changeTitle.getAttribute('prev_text');
-            showAlert({{__('messages.warning.invalid')}}, 'warning');
+            showAlert("{{__('messages.warning.invalid')}}", 'warning');
         }
     }).catch(error => { console.error('Error:', error);});
 }
@@ -451,9 +451,9 @@ function uploadMarker() {
             placeMarker(data.marker);
             document.getElementById("markers_" + map_id).innerHTML += 
                 `<li id="mark_${data.marker.id}"><a class="dropdown-item search" onclick="highlightMarker(${data.marker.id})">${data.marker.title}</a></li>`;
-            showAlert({{__('messages.added.marker')}});
+            showAlert("{{__('messages.added.marker')}}");
         } else 
-            showAlert({{__('messages.warning.invalid')}}, 'warning');
+            showAlert("{{__('messages.warning.invalid')}}", 'warning');
     }).catch(error => { console.error('Error:', error);});
 
     document.getElementById('marker_title').value = '';
@@ -477,7 +477,7 @@ function deleteMarker(btn) {
             if (data.success) {
                 document.getElementById("marker_" + markerId).remove();
                 document.getElementById("mark_" + markerId).remove();
-                showAlert({{__('messages.deleted.marker')}});
+                showAlert("{{__('messages.deleted.marker')}}");
             } else showAlert(data.message, 'warning');
         })
         .catch(error => console.error('Error:', error));
@@ -510,11 +510,11 @@ function changeMarker(btn) {
             changeTitle.setAttribute('prev_text', changeTitle.value);
             changeText.setAttribute('prev_text', changeText.value);
             document.querySelector("#mark_" + markerId + " a").innerHTML = changeTitle.value;
-            showAlert({{__('messages.updated.marker')}});
+            showAlert("{{__('messages.updated.marker')}}");
         } else {
             changeTitle.value = changeTitle.getAttribute('prev_text');
             changeText.innerText = changeText.getAttribute('prev_text');
-            showAlert({{__('messages.warning.invalid')}}, 'warning');
+            showAlert("{{__('messages.warning.invalid')}}", 'warning');
         }
     }).catch(error => { console.error('Error:', error); });
 }
@@ -548,6 +548,3 @@ function highlightMarker(id) {
 
 </script>
 @endsection
-<!-- 
-    delete image from folder, when delete map
--->

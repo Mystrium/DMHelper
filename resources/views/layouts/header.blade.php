@@ -44,8 +44,11 @@
                         </li>
                     @endauth
                 </ul>
-                <a href="{{ route('lang.switch', 'en') }}" class="nav-link">Eng</a>|
-                <a href="{{ route('lang.switch', 'uk') }}" class="nav-link">Укр</a>
+                @if (App::getLocale() === 'en')
+                    <a class="nav-link" href="{{ route('lang.switch', 'uk') }}">Укр</a>
+                @else
+                    <a class="nav-link" href="{{ route('lang.switch', 'en') }}">Eng</a>
+                @endif
             </div>
         </nav>
     </div>

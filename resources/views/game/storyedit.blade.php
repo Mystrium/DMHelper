@@ -343,9 +343,9 @@ function addafterBlock() {
                 drawNode(newBlock, window.innerWidth / 2, 50);
             }
 
-            showAlert({{__('messages.added.story')}});
+            showAlert("{{__('messages.added.story')}}");
         } else
-            showAlert({{__('messages.warning.invalid')}}, 'warning');
+            showAlert("{{__('messages.warning.invalid')}}", 'warning');
     }).catch(error => { console.error('Error:', error);});
 
     title.value = '';
@@ -400,9 +400,9 @@ function updateBlock() {
             $(`#nextNodeSelect`).trigger('change');
             $(`#nextNodeSelect`).append(new Option(title.value, id, false, false)).trigger('change');
 
-            showAlert({{__('messages.updated.story')}});
+            showAlert("{{__('messages.updated.story')}}");
         } else {
-            showAlert({{__('messages.warning.invalid')}}, 'warning');
+            showAlert("{{__('messages.warning.invalid')}}", 'warning');
             title.value = graph.nodes.find(node => node.id == id).title;
             text.value  = graph.nodes.find(node => node.id == id).text;
         }
@@ -437,7 +437,7 @@ function deleteBlock() {
             document.getElementById('block_title').value = '';
             document.getElementById('block_text').value = '';
 
-            showAlert({{__('messages.deleted.story')}});
+            showAlert("{{__('messages.deleted.story')}}");
         } else 
             showAlert(data.message, 'warning');
     }).catch(error => console.error('Error:', error));

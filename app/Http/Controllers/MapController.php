@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Map;
 
@@ -19,7 +20,6 @@ class MapController extends Controller {
 
         $file = $request->file('map_file');
         $fileName = time();
-        // $fileName = time().'_'.$file->getClientOriginalName();
 
         $file->storeAs('maps', $fileName, 'public');
 
@@ -49,10 +49,15 @@ class MapController extends Controller {
         }
     }
 
-
     function destroy($id) {
         $map = Map::findOrFail($id);
+
+        $file_name = 'maps/' .  $map->file_name;
+        if (Storage::disk('public')->exists($file_name))
+            Storage::disk('public')->delete($file_name);
+
         $map->delete();
+
         return back()->withErrors(['msg' => __('messages.deleted.map')]);
     }
 }

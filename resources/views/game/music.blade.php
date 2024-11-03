@@ -179,7 +179,7 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById("music_" + musicId).remove();
-                    showAlert({{__('messages.deleted.music')}});
+                    showAlert("{{__('messages.deleted.music')}}");
                 } else showAlert(data.message, 'warning');
             })
             .catch(error => console.error('Error:', error));
