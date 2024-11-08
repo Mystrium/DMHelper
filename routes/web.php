@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CharacterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicListController;
 use App\Http\Controllers\MarkerController;
@@ -72,4 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::post(   'users/ban',     [UserController::class, 'ban']);
     Route::get(    'profile/{id}',  [UserController::class, 'profile'])->name('profile');
     Route::put(    'profile/{id}',  [UserController::class, 'update'])->name('profile.update');
+
+    Route::get(   'characters/{id}',[CharacterController::class, 'index'])->name('characters');
+    Route::post(   'character/{id}',[CharacterController::class, 'create'])->name('character.add');
+    // Route::put(    'character/{id}',[CharacterController::class, 'update'])->name('character.update');
+    Route::delete( 'character/{id}',[CharacterController::class, 'destroy'])->name('character.destroy');
 });

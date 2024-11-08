@@ -31,6 +31,7 @@ return [
         'music'   => 'Music added',
         'marker'  => 'Marker added',
         'story'   => 'Story block added',
+        'character' => 'Character attached to game'
     ],
 
     'visible' => [
@@ -49,7 +50,8 @@ return [
     ],
 
     'warning' => [
-        'invalid' => 'Field too long or empty'
+        'invalid'   => 'Field too long or empty',
+        'character' => 'Failed to attach character to game, wrong name'
     ],
 
 ];

@@ -4,6 +4,7 @@ return [
     'addgame'       => 'Add new game',
     'addmusic'      => 'Add new music',
     'addlist'       => 'Add new playlist',
+    'addcharacter'  => 'Attach character to game',
 
     'changegame'    => 'Change game',
     'changelist'    => 'Change playlist',

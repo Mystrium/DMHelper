@@ -21,4 +21,5 @@ return [
     'category'  => 'Category',
     'image'     => 'Map image',
     'url'       => 'YouTube url',
+    'apiurl'    => 'Character list url',
 ];

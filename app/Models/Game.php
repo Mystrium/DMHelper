@@ -32,5 +32,9 @@ class Game extends Model {
         return $this->hasMany(Map::class);
     }
 
+    public function characters() {
+        return $this->hasMany(Character::class);
+    }
+
     public $timestamps = false;
 }
