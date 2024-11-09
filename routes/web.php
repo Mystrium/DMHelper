@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post(    'story/next',   [StoryController::class, 'next'])->name('story.next');
 
     Route::get(    'play/{game_id}',[PlayController::class, 'index'])->name('play');
-    Route::get(    'fight',         [PlayController::class, 'fight'])->name('fight');
+    Route::get(   'fight/{game_id}',[PlayController::class, 'fight'])->name('fight');
 
     Route::get(    'users/',        [UserController::class, 'index'])->name('profile.all');
     Route::post(   'users/ban',     [UserController::class, 'ban']);

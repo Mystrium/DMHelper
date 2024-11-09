@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use Illuminate\Http\Request;
 use App\Models\Character;
 
 class CharacterController extends Controller {    
     public function index($gameId) {
         $apiurl = 'http://127.0.0.1:8001/api/character/';
+        $is_owner = Game::find($gameId)->user_id == auth()->id();
 
         $ids = Character::where('game_id', $gameId)->get()->pluck('external_id');
 
@@ -16,7 +18,7 @@ class CharacterController extends Controller {
         foreach($ids as $id)
             $characters[] = $this->fetchCharacterFromApi($apiurl . 'short/' . $id);
 
-        return view('game.characters', compact('characters', 'gameId', 'apiurl'));
+        return view('game.characters', compact('characters', 'gameId', 'apiurl', 'is_owner'));
     }
 
     public function create(Request $request, $gameId) {
@@ -32,17 +34,12 @@ class CharacterController extends Controller {
             ]);
 
             return back()->withErrors(['msg' => __('messages.added.character')]);
-
         } else
             return back()->withErrors(['msg' => __('messages.warning.character')]);
     }
 
-    public function update(Request $request){
-//о, апдейт можна зробити простіше, взагалі без контролера, а через аякс, так як змінювати гравця на стороні АПІ треба без оновлення сторінки, на стороні апіхи просто переробити метод, щоб він приймав ід, та хеш для верифікації, і далі дані, які потрібно змінити
-    }
-
     public function destroy($id) {
-        $character = Character::findOrFail($id);
+        $character = Character::where('external_id',$id)->first();
 
         if ($character) {
             $character->delete();

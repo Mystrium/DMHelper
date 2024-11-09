@@ -129,15 +129,16 @@
 
     .npc {
         position: absolute;
-        background-color: rgba(0, 255, 0, 0.5); /* Колір для NPC */
+        background-color: rgba(0, 255, 0, 0.5);
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: bold;
+        width: 50px
     }
 
     .npc.active {
-        background-color: rgba(255, 0, 0, 0.7); /* Колір для активного NPC */
+        background-color: rgba(255, 0, 0, 0.7);
     }
 
 </style>

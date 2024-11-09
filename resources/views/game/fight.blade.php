@@ -19,9 +19,9 @@
                 </svg>
             </a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Ліс</a></li>
-                <li><a class="dropdown-item" href="#">Місто</a></li>
-                <li><a class="dropdown-item" href="#">Зима</a></li>
+                <li><button class="dropdown-item" onclick="changeMap(1)">Ліс</button></li>
+                <li><button class="dropdown-item" onclick="changeMap(2)">Місто</button></li>
+                <li><button class="dropdown-item" onclick="changeMap(3)">Зима</button></li>
             </ul>
         </div>
     </div>
@@ -160,13 +160,13 @@
 </div>
 @endsection
 @section('scripts')
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> <!-- ??? -->
 <script>
 const fightMap = document.getElementById('battle-map');
 
 const cellSize = 50;
 fightMap.onload = function() {
     const gridOverlay = document.querySelector('.grid');
+    gridOverlay.innerHTML = '';
     const mapWidth = parseInt(fightMap.style.width);
     const mapHeight = parseInt(fightMap.style.height);
 
@@ -234,8 +234,8 @@ function renderNpcOnGrid(id) {
     let cell = document.querySelector(`.grid-cell[data-index="${npc[id].pos}"]`);
     let npcDiv = document.createElement('div');
     npcDiv.classList.add('npc', 'map-marker');
-    npcDiv.innerHTML = `${npc[id].name}
-                        <div class="tooltip-card">
+    npc_ident = npc[id].img ? `<img src="${npc[id].img}" width="48px">` : `<p class="pt-1">${npc[id].name}</p>`;
+    npcDiv.innerHTML = npc_ident + `<div class="tooltip-card">
                             <div class="card">
                                 <div class="card-body">
                                     <h6 class="text-center">${npc[id].name}</h6>
@@ -301,9 +301,7 @@ function nextTurn() {
 }
 
 let attack = false;
-function startAtack(){
-    attack = true;
-}
+function startAtack() { attack = true; }
 
 let activeNpcId = null;
 let currentTarget = null;
@@ -313,7 +311,8 @@ function activateNpc(id) {
         currentTarget = id;
         console.log("Вибрана ціль:", npc[id].name);
 
-        $('#attackModal').modal('show'); // modal is not a function...
+        const attackModal = new bootstrap.Modal(document.getElementById('attackModal'));
+        attackModal.show();
     } else {
         activeNpcId = id;
         placing = 3;
@@ -368,13 +367,23 @@ function attackNpc() {
     attack = false;
 }
 
+function changeMap(id) {
+    let newMapUrl;
+    switch (id) {
+        case 1:
+            newMapUrl = 'https://runefoundry.com/cdn/shop/products/ForestEncampment_digital_day_grid.jpg?v=1676584019';
+            break;
+        case 2:
+            newMapUrl = 'https://i.etsystatic.com/36261940/r/il/648520/4002717423/il_fullxfull.4002717423_cpam.jpg';
+            break;
+        case 3:
+            newMapUrl = 'https://i.pinimg.com/736x/93/f1/22/93f122b9ab25f27da494aa5c81bffbdb.jpg';
+            break;
+        default:
+            newMapUrl = 'https://runefoundry.com/cdn/shop/products/ForestEncampment_digital_day_grid.jpg?v=1676584019'; // URL за замовчуванням
+    }
+    document.getElementById('battle-map').src = newMapUrl;
+}
+
 </script>
 @endsection
-
-<!-- 
-    todo think
-    todo unit type select ???
-    todo dnd classes icons ???
-        fight icons table ???
-    todo players seacrh ???
--->

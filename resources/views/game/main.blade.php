@@ -8,8 +8,7 @@
             <div id="map_cont"></div>
         </div>
         <div class="tab-pane" id="players" role="tabpanel" aria-labelledby="story-tab">
-            <div id="players_cont">
-                <h1 class="position-absolute top-50 start-50 translate-middle-x">in development...</h1>
+            <div id="chars_cont">
             </div>
         </div>
         <div class="tab-pane show active" id="story" role="tabpanel" aria-labelledby="story-tab">
@@ -45,28 +44,22 @@
 @endsection
 
 @section('scripts')
-<!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script>
-    
 $(document).ready(function() {
     loadPage('/map/{{$game_id}}',       'map_cont');
+    loadPage('/characters/{{$game_id}}','chars_cont');
     loadPage('/story/{{$game_id}}',     'story_cont');
     loadPage('/music/{{$music_list}}',  'music_cont');
-    loadPage('/fight', 'fight_cont');
-
-    // loadPage('...', 'players_cont');
+    loadPage('/fight/{{$game_id}}',     'fight_cont');
 });
 
 function loadPage(url, container) {
     $.ajax({
         url: url + '?play=true',
-        success: function(response) {
-            $('#' + container).html(response);
-        },
-        error: function() {
-            $('#' + container).html('<h1>Смерт сторінки...</h1>');
-        }
+        success: function(response) { $('#' + container).html(response); },
+        error: function() { $('#' + container).html('<h1>Смерт сторінки...</h1>'); }
     });
 }
 

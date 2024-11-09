@@ -3,25 +3,28 @@
 @section('title', 'Гравці')
 
 @section('content')
+@php $can_edit = !request()->has('play'); @endphp
     <div class="container my-5">
         <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/story/{{$gameId}}"><- {{__('links.story')}}</a>
 
-        <div class="position-fixed end-0 pe-4">
-            <div class="dropdown">
-                <a data-bs-toggle="modal" data-bs-target="#attachCharacter">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                    </svg>
-                </a>
+        @if($can_edit)
+            <div class="position-fixed end-0 pe-4">
+                <div class="dropdown">
+                    <a data-bs-toggle="modal" data-bs-target="#attachCharacter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="green" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
-        </div>
+        @endif
 
         <h3 class="my-3">Листи персонажів</h3>
         <div class="row">
-        @foreach($characters as $character)
+            @foreach($characters as $character)
                 <div class="col-md-4">
-                    <div class="card ps-2 pt-1" onclick="showCharacterPdf(event, {{ $character['id'] }})">
+                    <div class="card ps-2 pt-1" onclick="showCharacterList(event, {{ $character['id'] }})" id="character_{{ $character['id'] }}">
                         <h5><span>{{ $character['player'] }}</span> ({{ $character['name'] }})</h5>
                         <p><span>{{ $character['race'] }}</span> {{ $character['class'] }} <span>(lvl: {{ $character['level'] }})</span></p>
                         <p><span>
@@ -35,22 +38,22 @@
                             </svg>
                         </span> {{ $character['hp'] }}/{{ $character['max_hp'] }}</p>
 
-                        <div class=" bottom-0 end-0 mb-2">
-                            <button class="btn btn-primary" onclick='editCharacter(event, @json($character))' data-bs-toggle="modal" data-bs-target="#editCharacterModal" type="submit" class="btn btn-warning btn-sm me-5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
-                                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
-                                </svg>
-                            </button>
+                        <div class="bottom-0 end-0 mb-2">
+                            @if($is_owner)
+                                <button class="btn btn-warning" onclick='editCharacter(event, @json($character))' data-bs-toggle="modal" data-bs-target="#editCharacterModal" type="submit" class="btn btn-warning btn-sm me-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                                    </svg>
+                                </button>
+                            @endif
                             
-                            <form method="POST" action="/character/delete/{{ $character['id'] }}" onsubmit="confirmDeletion(event, '{{ $character['name'] }}')" class="position-absolute bottom-0 end-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger mt-2">
+                            @if($can_edit)
+                                <button data-id="{{ $character['id'] }}" onclick="deleteCharacter(this)" class="btn btn-danger">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                                     </svg>
                                 </button>
-                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -66,12 +69,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="characterSheetContainer">
+                    ...
                 </div>
             </div>
         </div>
     </div>
 
-
+@if($can_edit)
     <div class="modal fade" id="attachCharacter" tabindex="-1" aria-labelledby="createGameLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -96,7 +100,9 @@
             </div>
         </div>
     </div>
+@endif
 
+@if($is_owner)
     <div class="modal fade" id="editCharacterModal" tabindex="-1" aria-labelledby="editCharacterModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -133,75 +139,98 @@
                             <label for="characterNotes" class="form-label">{{ __('Notes') }}</label>
                             <textarea class="form-control" id="characterNotes" name="notes"></textarea>
                         </div>
-                        <button type="submit" onclick="updateCharacter(event)" class="btn btn-success">{{ __('buttons.change') }}</button>
+                        <button type="submit" onclick="updateCharacter(event)" class="btn btn-success" data-bs-dismiss="modal">{{ __('buttons.change') }}</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+@endif
 @endsection
 
 @section('scripts')
     <script>
-        function editCharacter(event, character) {
-            event.preventDefault();
-            event.stopPropagation()
-            document.getElementById('characterId').value = character.id;
-            document.getElementById('editCharacterModalLabel').innerHTML = '{{ __('Редагувати персонажа') }} "' + character.name + '"';
-            document.getElementById('characterHp').value = character.hp;
-            document.getElementById('characterAt').value = character.at;
-            document.getElementById('characterLevel').value = character.level;
-            document.getElementById('characterSpeed').value = character.speed;
-            document.getElementById('characterInventory').value = character.inventory;
-            document.getElementById('characterNotes').value = character.notes || '';
-        }
+        @if($can_edit)
+            function deleteCharacter(btn) {
+                event.stopPropagation()
+                const charId = btn.getAttribute('data-id');
+                const confirmed = confirm("{{__('messages.delete.character')}} ?");
 
-        function confirmDeletion(event, title) {
-            event.stopPropagation()
-            event.preventDefault();
-            if (confirm('{{ __('messages.delete.character') }} "' + title + '" ?')) {
-                event.target.submit();
-            }
-        }
-
-        function updateCharacter(event) {
-            event.preventDefault();
-
-            const formData = new FormData(document.getElementById('editCharacterForm'));
-            const characterId = formData.get('id');
-            const verificationHash = formData.get('verification_hash');
-
-            fetch(`{{$apiurl}}${characterId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': formData._token
-                },
-                body: JSON.stringify({
-                    level: formData.get('level'),
-                    hp: formData.get('hp'),
-                    at: formData.get('at'),
-                    speed: formData.get('speed'),
-                    inventory: formData.get('inventory'),
-                    notes: formData.get('notes')
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Помилка оновлення даних');
+                if (confirmed) {
+                    fetch(`/character/${charId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("character_" + charId).remove();
+                            showAlert("{{__('messages.deleted.character')}}");
+                        } else showAlert(data.message, 'warning');
+                    })
+                    .catch(error => console.error('Error:', error));
                 }
-                return response.json();
-            })
-            .then(data => {
-                alert('Персонаж успішно оновлений!');
-                location.reload();
-            })
-            .catch(error => {
-                alert('Сталася помилка: ' + error.message);
-            });
-        }
+            };
+        @endif
 
-        function showCharacterPdf(event, characterId) {
+        @if($is_owner)
+            function editCharacter(event, character) {
+                event.preventDefault();
+                event.stopPropagation()
+                document.getElementById('characterId').value = character.id;
+                document.getElementById('editCharacterModalLabel').innerHTML = '{{ __('Редагувати персонажа') }} "' + character.name + '"';
+                document.getElementById('characterHp').value = character.hp;
+                document.getElementById('characterAt').value = character.at;
+                document.getElementById('characterLevel').value = character.level;
+                document.getElementById('characterSpeed').value = character.speed;
+                document.getElementById('characterInventory').value = character.inventory;
+                document.getElementById('characterNotes').value = character.notes || '';
+            }
+
+            function updateCharacter(event) {
+                event.preventDefault();
+
+                const formData = new FormData(document.getElementById('editCharacterForm'));
+                const characterId = formData.get('id');
+                const verificationHash = formData.get('verification_hash');
+
+                fetch(`{{$apiurl}}${characterId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': formData._token
+                    },
+                    body: JSON.stringify({
+                        level: formData.get('level'),
+                        hp: formData.get('hp'),
+                        at: formData.get('at'),
+                        speed: formData.get('speed'),
+                        inventory: formData.get('inventory'),
+                        notes: formData.get('notes')
+                    })
+                })
+                .then(response => {
+                    if (!response.ok)
+                        showAlert(response, 'warning');
+                    return response.json();
+                })
+                .then(data => {
+                    showAlert("{{__('messages.updated.character')}}");
+                    // location.reload();
+                })
+                .catch(error => {
+                    showAlert(error.message, 'warning');
+                });
+            }
+        @endif
+
+        function showCharacterList(event, characterId) {
+            const listModal = new bootstrap.Modal(document.getElementById('listModal'));
+            listModal.show();
+
             fetch(`{{$apiurl}}list/${characterId}`, {
                 method: 'GET',
                 headers: {
@@ -211,14 +240,10 @@
             .then(response => response.text())
             .then(html => {
                 document.getElementById('characterSheetContainer').innerHTML = html;
-                const listModal = new bootstrap.Modal(document.getElementById('listModal'));
-                listModal.show();
             })
             .catch(error => {
                 console.error('Помилка завантаження ліста персонажа:', error);
             });
         }
-
-
     </script>
 @endsection
