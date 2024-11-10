@@ -42,6 +42,16 @@
         </div>
     </div>
 
+    <div class="position-absolute bottom-0 start-0 p-4">
+        <button class="btn btn-outline-warning" onclick="endFight()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red" class="bi bi-sign-stop" viewBox="0 0 16 16">
+                <path d="M3.16 10.08c-.931 0-1.447-.493-1.494-1.132h.653c.065.346.396.583.891.583.524 0 .83-.246.83-.62 0-.303-.203-.467-.637-.572l-.656-.164c-.61-.147-.978-.51-.978-1.078 0-.706.597-1.184 1.444-1.184.853 0 1.386.475 1.436 1.087h-.645c-.064-.32-.352-.542-.797-.542-.472 0-.77.246-.77.6 0 .261.196.437.553.522l.654.161c.673.164 1.06.487 1.06 1.11 0 .736-.574 1.228-1.544 1.228Zm3.427-3.51V10h-.665V6.57H4.753V6h3.006v.568H6.587Z"/>
+                <path fill-rule="evenodd" d="M11.045 7.73v.544c0 1.131-.636 1.805-1.661 1.805-1.026 0-1.664-.674-1.664-1.805V7.73c0-1.136.638-1.807 1.664-1.807s1.66.674 1.66 1.807Zm-.674.547v-.553c0-.827-.422-1.234-.987-1.234-.572 0-.99.407-.99 1.234v.553c0 .83.418 1.237.99 1.237.565 0 .987-.408.987-1.237m1.15-2.276h1.535c.82 0 1.316.55 1.316 1.292 0 .747-.501 1.289-1.321 1.289h-.865V10h-.665zm1.436 2.036c.463 0 .735-.272.735-.744s-.272-.741-.735-.741h-.774v1.485z"/>
+                <path fill-rule="evenodd" d="M4.893 0a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146A.5.5 0 0 0 11.107 0zM1 5.1 5.1 1h5.8L15 5.1v5.8L10.9 15H5.1L1 10.9z"/>
+            </svg>
+        </button>
+    </div>
+
     <div class="position-absolute bottom-0 end-0 p-4">
         <button class="btn btn-success" onclick="nextTurn()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
@@ -50,27 +60,37 @@
         </button>
     </div>
 
-    <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75 pb-2">
+    <div class="position-absolute bottom-0 start-50 translate-middle-x bg-light p-2 border rounded opacity-75 pb-2 text-center" style="width:150px">
         <span id="curr_name"></span>
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-            </svg>
-            <span id="curr_hp"></span>
+        <div class="d-flex justify-content-between">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                </svg>
+                <span id="curr_hp"></span>
+            </div>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-shield" viewBox="0 0 16 16">
+                    <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+                </svg>
+                <span id="curr_ac"></span>
+            </div>
         </div>
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield" viewBox="0 0 16 16">
-                <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
-            </svg>
-            <span id="curr_ac"></span>
+        <div class="d-flex justify-content-between mt-2">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-lightning-charge" viewBox="0 0 16 16">
+                    <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41z"/>
+                </svg>
+                <span id="curr_innit"></span>
+            </div>
+            <div>
+                <svg id="speed_div" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-arrows-move" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
+                </svg>
+                <span id="curr_speed"></span>
+            </div>
         </div>
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge" viewBox="0 0 16 16">
-                <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41z"/>
-            </svg>
-            <span id="curr_innit"></span>
-        </div>
-        <span id="curr_state"></span>
+        <div><span id="curr_state"></span></div>
         <button onclick="startAtack()" class="btn btn-warning">A</button>
     </div>
 </div>
@@ -84,7 +104,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Категорія</label>
+                    <label class="form-label">{{__('fields.auth.titles.name')}}</label>
                     <select class="form-select" id="player_id">
                         @foreach($players as $id =>  $player)
                             <option value="{{$id}}">{{$player['name']}}</option>
@@ -158,6 +178,20 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsLabel">{{__('labels.results')}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="resultsCont">
+                ...
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('scripts')
 <script>
@@ -188,6 +222,7 @@ fightMap.onload = function() {
 };
 
 let npc = @json($players);
+let reload_nps = @json($players);
 let moves = [];
 
 let placing = 0;
@@ -199,9 +234,9 @@ function placeNpc(i) {
             let pl_id = document.getElementById('player_id').value * 1;
             npc[pl_id].initiative += document.getElementById('innitiative').value * 1;
 
-            $(`#player_id option[value='${pl_id}']`).remove();
-            if($('#player_id option').length == 0)
-                document.getElementById('add_player_li').style.display = 'none'
+            $(`#player_id option[value='${pl_id}']`).hide();
+            if($('#player_id option:visible').length == 0)
+                $('#add_player_li').hide();
 
             document.getElementById('innitiative').value = '';
             npc[pl_id].pos = i;
@@ -256,8 +291,16 @@ function renderNpcOnGrid(id) {
                                             <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41z"/>
                                         </svg>
                                         <span id="tip_${id}">${npc[id].initiative}</span>
-                                    </div>
-                                    <span id="state_tip_${id}"></span>
+                                    </div>` + 
+                                    (npc[id].speed ?
+                                        `<div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-move" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
+                                            </svg>
+                                            <span id="tip_${id}">${npc[id].speed}</span>
+                                        </div>` : ''
+                                    ) +
+                                    `<span id="state_tip_${id}"></span>
                                 </div>
                             </div>
                         </div>`;
@@ -290,7 +333,15 @@ function highlightNpc() {
     document.getElementById('curr_hp').innerText = npc[id].hp;
     document.getElementById('curr_ac').innerText = npc[id].armor;
     document.getElementById('curr_innit').innerText = npc[id].initiative;
-    document.getElementById('curr_state').innerText = npc[id].state;
+    document.getElementById('curr_state').innerText = npc[id].state != 0 ? npc[id].state : '';
+    sped_div = document.getElementById('speed_div');
+    if(npc[id].speed){
+        document.getElementById('curr_speed').innerText = npc[id].speed;
+        sped_div.style.display = 'inline-block';
+    } else {
+        document.getElementById('curr_speed').innerText = '';
+        sped_div.style.display = 'none';
+    }
 }
 
 let currentTurn = 0;
@@ -364,6 +415,7 @@ function attackNpc() {
     if(currentTarget == moves[currentTurn].id)
         renderNpcOnGrid(currentTarget);
 
+    document.getElementById('damage').value = '';
     attack = false;
 }
 
@@ -383,6 +435,42 @@ function changeMap(id) {
             newMapUrl = 'https://runefoundry.com/cdn/shop/products/ForestEncampment_digital_day_grid.jpg?v=1676584019'; // URL за замовчуванням
     }
     document.getElementById('battle-map').src = newMapUrl;
+}
+
+function endFight() {
+    if (confirm('{{__('messages.endfight')}} ?')) {
+        $('.npc').remove();
+        $('#player_id option').show();
+        $('#add_player_li').show();
+
+        document.getElementById('curr_name').innerText =  '';
+        document.getElementById('curr_hp').innerText =    '';
+        document.getElementById('curr_ac').innerText =    '';
+        document.getElementById('curr_innit').innerText = '';
+        document.getElementById('curr_state').innerText = '';
+        document.getElementById('curr_speed').innerText = '';
+
+        let results = '<h5>{{__('labels.characters')}}:</h5>';
+        let killed  = '<hr><h5>{{__('labels.killed')}}:</h5>';
+        document.getElementById('resultsCont').innerHTML = '';
+
+        for (var key in npc) {
+            if(npc[key].player == 1)
+                results += `<p>${npc[key].name} => 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart" viewBox="0 0 16 16">
+                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                    </svg> ${npc[key].hp}</p>`;
+            else
+                killed += `<p>${npc[key].name}</p>`;
+        }
+
+        document.getElementById('resultsCont').innerHTML = results + killed;
+
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+        npc = reload_nps;
+        moves = [];
+    }
 }
 
 </script>

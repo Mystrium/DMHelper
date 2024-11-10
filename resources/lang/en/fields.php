@@ -22,4 +22,10 @@ return [
     'image'     => 'Map image',
     'url'       => 'YouTube url',
     'apiurl'    => 'Character list url',
+    'hp'        => 'Hit points',
+    'at'        => 'Armor class',
+    'level'     => 'Level',
+    'speed'     => 'Plus speed',
+    'inventory' => 'Inventory',
+    'notes'     => 'Notes',
 ];

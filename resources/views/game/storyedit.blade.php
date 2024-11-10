@@ -6,9 +6,9 @@
 <div class="container-fluid">
     <div id="graph-container" style="position: relative; height: 2000px; width: 100%;"></div>
 
-    <a class="btn btn-success position-fixed top-0 start-0 mt-5" href="/characters/{{$gameId}}"><- {{__('links.map')}}</a>
     <a class="btn btn-success position-fixed bottom-0 start-0 m-2" href="/map/{{$gameId}}"><- {{__('links.map')}}</a>
-    <a class="btn btn-success position-fixed bottom-0 end-0 m-2" href="/story/{{$gameId}}?play=true">{{__('links.preview')}}</a>
+    <a class="btn btn-success position-fixed top-0 start-0 mt-5" href="/story/{{$gameId}}?play=true">{{__('links.preview')}}</a>
+    <a class="btn btn-success position-fixed bottom-0 end-0 m-2" href="/characters/{{$gameId}}">{{__('links.players')}} -></a>
 
     <div class="form-container position-fixed bottom-0 start-50 translate-middle-x text-center mb-1 w-50">
         <div class="form-group">
