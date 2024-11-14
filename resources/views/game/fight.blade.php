@@ -475,3 +475,10 @@ function endFight() {
 
 </script>
 @endsection
+
+<!-- 
+    todo
+        reject attack
+        side initiative cards
+        rounds counter
+-->

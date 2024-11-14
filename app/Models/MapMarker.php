@@ -11,7 +11,8 @@ class MapMarker extends Model {
     protected $fillable = [
         'map_id', 
         'title', 
-        'text', 
+        'text',
+        'type',
         'x',
         'y'
     ];

@@ -18,6 +18,7 @@ class MarkerController extends Controller {
                 'map_id' => 'required|integer|exists:maps,id',
                 'title' => 'required|string|max:40',
                 'text' => 'nullable|string|max:300',
+                'type' => 'required|integer',
                 'x' => 'required|integer',
                 'y' => 'required|integer',
             ]);
@@ -26,6 +27,7 @@ class MarkerController extends Controller {
                 'map_id' => $request->map_id,
                 'title' => $request->title,
                 'text' => $request->text,
+                'type' => $request->type,
                 'x' => $request->x,
                 'y' => $request->y
             ]);
@@ -42,13 +44,15 @@ class MarkerController extends Controller {
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:40',
-                'text' => 'nullable|string|max:300'
+                'text' => 'nullable|string|max:300',
+                'type' => 'required|integer',
             ]);
     
             $marker = MapMarker::findOrFail($request->id);
     
             $marker->title = $validated['title'];
             $marker->text  = $validated['text'];
+            $marker->type  = $validated['type'];
             $marker->save();
     
             return response()->json(['success' => true]);

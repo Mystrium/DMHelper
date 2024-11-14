@@ -28,8 +28,6 @@ Route::post('register', [AuthController::class, 'register'])->name("register");
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::view('/players', 'game.players');
-
     Route::get(     'playlists',    [MusicListController::class, 'index'])->name('playlists');
     Route::get(     'playlists/my', [MusicListController::class, 'mylist'])->name('playlists.my');
     Route::get(  'playlists/fetch', [MusicListController::class, 'fetch'])->name('playlists.ajax');
@@ -76,6 +74,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get(   'characters/{id}',[CharacterController::class, 'index'])->name('characters');
     Route::post(   'character/{id}',[CharacterController::class, 'create'])->name('character.add');
-    // Route::put(    'character/{id}',[CharacterController::class, 'update'])->name('character.update');
     Route::delete( 'character/{id}',[CharacterController::class, 'destroy'])->name('character.destroy');
 });
